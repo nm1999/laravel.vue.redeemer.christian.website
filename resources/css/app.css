@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+	.scroll-reveal {
+		opacity: 0;
+		transition: transform 0.72s ease, opacity 0.72s ease;
+		transition-delay: var(--reveal-delay, 0ms);
+	}
+
+	.reveal-from-left {
+		transform: translateX(-38px);
+	}
+
+	.reveal-from-right {
+		transform: translateX(38px);
+	}
+
+	.reveal-from-bottom {
+		transform: translateY(32px);
+	}
+
+	.scroll-reveal.is-visible {
+		opacity: 1;
+		transform: translate(0, 0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.scroll-reveal,
+		.scroll-reveal.is-visible {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+}

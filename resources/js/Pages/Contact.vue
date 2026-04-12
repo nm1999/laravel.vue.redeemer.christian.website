@@ -1,14 +1,17 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { useScrollReveal } from '../composables/useScrollReveal';
+
+useScrollReveal();
 </script>
 
 <template>
   <Layout>
     <Head title="Contact" />
 
-    <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-      <div class="rounded-[32px] border border-white/10 bg-slate-900/80 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur-md">
+    <section class="scroll-reveal reveal-from-bottom grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+      <div class="scroll-reveal reveal-from-left rounded-[32px] border border-white/10 bg-slate-900/80 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur-md" style="--reveal-delay: 70ms">
         <div class="space-y-6">
           <div>
             <p class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-200">Contact</p>
@@ -32,11 +35,11 @@ import { Head, Link } from '@inertiajs/vue3';
           </div>
 
           <div class="grid gap-4 sm:grid-cols-2">
-            <div class="rounded-3xl bg-slate-950/90 p-6 shadow-xl shadow-slate-950/20">
+            <div class="scroll-reveal reveal-from-bottom rounded-3xl bg-slate-950/90 p-6 shadow-xl shadow-slate-950/20" style="--reveal-delay: 60ms">
               <p class="text-xl font-semibold text-white">Prayer requests</p>
               <p class="mt-3 text-slate-300 leading-7">Send us your needs and we’ll pray with you through our weekly prayer team.</p>
             </div>
-            <div class="rounded-3xl bg-slate-950/90 p-6 shadow-xl shadow-slate-950/20">
+            <div class="scroll-reveal reveal-from-bottom rounded-3xl bg-slate-950/90 p-6 shadow-xl shadow-slate-950/20" style="--reveal-delay: 130ms">
               <p class="text-xl font-semibold text-white">Visit information</p>
               <p class="mt-3 text-slate-300 leading-7">Plan your first visit with directions, childcare details, and what to expect.</p>
             </div>
@@ -44,7 +47,7 @@ import { Head, Link } from '@inertiajs/vue3';
         </div>
       </div>
 
-      <div class="rounded-[32px] border border-white/10 bg-slate-900/80 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur-md">
+      <div class="scroll-reveal reveal-from-right rounded-[32px] border border-white/10 bg-slate-900/80 p-8 shadow-2xl shadow-slate-950/40 backdrop-blur-md" style="--reveal-delay: 120ms">
         <div class="space-y-6">
           <h2 class="text-3xl font-semibold text-white">Send a message</h2>
           <p class="text-slate-300 leading-7">Use this form to share your prayer requests, ask about our ministries, or tell us how we can assist you.</p>

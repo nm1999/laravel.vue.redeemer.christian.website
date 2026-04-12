@@ -1,10 +1,13 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { useScrollReveal } from '../composables/useScrollReveal';
 
 const props = defineProps({
   posts: Array,
 });
+
+useScrollReveal();
 </script>
 
 <template>
@@ -20,7 +23,16 @@ const props = defineProps({
         </div>
 
         <div class="grid gap-6 lg:grid-cols-3">
-          <article v-for="post in posts" :key="post.slug" class="group overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:bg-white">
+          <article
+            v-for="(post, index) in posts"
+            :key="post.slug"
+            class="scroll-reveal group overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:bg-white"
+            :class="[
+              index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right',
+              index < 3 ? 'is-visible' : '',
+            ]"
+            :style="index < 3 ? {} : { '--reveal-delay': `${(index - 3) * 90}ms` }"
+          >
             <div class="space-y-4">
               <div class="overflow-hidden rounded-3xl bg-slate-100">
                 <img :src="post.image" :alt="post.title" class="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />

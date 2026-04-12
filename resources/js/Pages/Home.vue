@@ -1,11 +1,232 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
+const homeGalleryImages = [
+  '/images/20210513_180051.jpg',
+  '/images/20210513_180120.jpg',
+  '/images/20210513_180223.jpg',
+  '/images/IMG-20210329-WA0060.jpg',
+  '/images/IMG-20210406-WA0010.jpg',
+  '/images/IMG-20210413-WA0002.jpg',
+  '/images/IMG-20210418-WA0012.jpg',
+  '/images/IMG-20210503-WA0016.jpg',
+  '/images/IMG-20210531-WA0002.jpg',
+  '/images/IMG_20210404_085754_156.jpg',
+  '/images/IMG_20210425_110113_947.jpg',
+];
+
+const heroSlides = [
+  {
+    image: '/images/20210513_180051.jpg',
+    kicker: 'Sunday Celebration',
+    title: 'Church is family, not just an event.',
+    description: 'Worship, community, and practical hope for every generation.',
+  },
+  {
+    image: '/images/IMG-20210418-WA0012.jpg',
+    kicker: 'Life At Redeemer',
+    title: 'Belong, grow, and serve together.',
+    description: 'Find real friendships, strong teaching, and a place to call home.',
+  },
+  {
+    image: '/images/IMG_20210425_110113_947.jpg',
+    kicker: 'Join This Weekend',
+    title: 'A warm welcome is waiting for you.',
+    description: 'Come as you are and experience faith that meets everyday life.',
+  },
+  {
+    image: '/images/IMG-20210503-WA0016.jpg',
+    kicker: 'Community Impact',
+    title: 'Bringing hope to our city.',
+    description: 'From prayer to outreach, we serve with love and purpose.',
+  },
+];
+
+const carouselSlides = [
+  {
+    label: 'Family',
+    title: 'Kids, youth, and families',
+    text: 'Safe spaces, joyful programs, and meaningful guidance for all ages.',
+    cardClass: 'border-blue-100 bg-blue-50 shadow-blue-100/70',
+    labelClass: 'text-blue-700',
+  },
+  {
+    label: 'Connect',
+    title: 'Small groups',
+    text: 'Weekly gatherings for prayer, study, and real friendships.',
+    cardClass: 'border-red-100 bg-red-50 shadow-red-100/70',
+    labelClass: 'text-red-700',
+  },
+  {
+    label: 'Grow',
+    title: 'Practical teaching',
+    text: 'Real-life faith that helps you thrive each week.',
+    cardClass: 'border-blue-100 bg-blue-50 shadow-blue-100/70',
+    labelClass: 'text-blue-700',
+  },
+  {
+    label: 'Serve',
+    title: 'Community care',
+    text: 'Local outreach, meals, and meaningful action together.',
+    cardClass: 'border-red-100 bg-red-50 shadow-red-100/70',
+    labelClass: 'text-red-700',
+  },
+  {
+    label: 'Inspire',
+    title: 'Daily devotionals',
+    text: 'Encouragement and scripture for life beyond Sunday.',
+    cardClass: 'border-blue-100 bg-blue-50 shadow-blue-100/70',
+    labelClass: 'text-blue-700',
+  },
+  {
+    label: 'Gather',
+    title: 'Special events',
+    text: 'Concerts, workshops, and community celebrations all year.',
+    cardClass: 'border-red-100 bg-red-50 shadow-red-100/70',
+    labelClass: 'text-red-700',
+  },
+];
+
+const activeSlide = ref(0);
+const activeHeroSlide = ref(0);
+let slideTimer = null;
+let heroSlideTimer = null;
+
+const nextHeroSlide = () => {
+  activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.length;
+};
+
+const previousHeroSlide = () => {
+  activeHeroSlide.value = (activeHeroSlide.value - 1 + heroSlides.length) % heroSlides.length;
+};
+
+const goToHeroSlide = (index) => {
+  activeHeroSlide.value = index;
+};
+
+const startHeroSlideTimer = () => {
+  stopHeroSlideTimer();
+  heroSlideTimer = window.setInterval(nextHeroSlide, 5500);
+};
+
+const stopHeroSlideTimer = () => {
+  if (heroSlideTimer) {
+    window.clearInterval(heroSlideTimer);
+    heroSlideTimer = null;
+  }
+};
+
+const nextSlide = () => {
+  activeSlide.value = (activeSlide.value + 1) % carouselSlides.length;
+};
+
+const previousSlide = () => {
+  activeSlide.value = (activeSlide.value - 1 + carouselSlides.length) % carouselSlides.length;
+};
+
+const goToSlide = (index) => {
+  activeSlide.value = index;
+};
+
+const startSlideTimer = () => {
+  stopSlideTimer();
+  slideTimer = window.setInterval(nextSlide, 4200);
+};
+
+const stopSlideTimer = () => {
+  if (slideTimer) {
+    window.clearInterval(slideTimer);
+    slideTimer = null;
+  }
+};
+
+onMounted(() => {
+  startHeroSlideTimer();
+  startSlideTimer();
+});
+
+onBeforeUnmount(() => {
+  stopHeroSlideTimer();
+  stopSlideTimer();
+});
 </script>
 
 <template>
   <Layout>
     <Head title="Home" />
+
+    <section
+      class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
+      @mouseenter="stopHeroSlideTimer"
+      @mouseleave="startHeroSlideTimer"
+    >
+      <div class="relative h-[68vh] min-h-[460px] max-h-[760px]">
+        <Transition name="hero-fade" mode="out-in">
+          <img
+            :key="heroSlides[activeHeroSlide].image"
+            :src="heroSlides[activeHeroSlide].image"
+            :alt="heroSlides[activeHeroSlide].title"
+            class="absolute inset-0 h-full w-full object-cover"
+          >
+        </Transition>
+
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/45 to-slate-900/20" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+
+        <div class="relative z-10 flex h-full items-end p-6 sm:p-10 lg:p-14">
+          <div class="max-w-3xl text-white">
+            <p class="inline-flex rounded-full bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-sm">
+              {{ heroSlides[activeHeroSlide].kicker }}
+            </p>
+            <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              {{ heroSlides[activeHeroSlide].title }}
+            </h1>
+            <p class="mt-4 max-w-2xl text-base text-slate-100 sm:text-lg">
+              {{ heroSlides[activeHeroSlide].description }}
+            </p>
+            <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link href="/about" class="inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+                Learn More
+              </Link>
+              <Link href="/contact" class="inline-flex items-center justify-center rounded-full border border-white/70 bg-white/10 px-7 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20">
+                Plan Your Visit
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Previous hero slide"
+          class="absolute left-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:left-5"
+          @click="previousHeroSlide"
+        >
+          <span aria-hidden="true">&#10094;</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Next hero slide"
+          class="absolute right-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:right-5"
+          @click="nextHeroSlide"
+        >
+          <span aria-hidden="true">&#10095;</span>
+        </button>
+
+        <div class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
+          <button
+            v-for="(slide, index) in heroSlides"
+            :key="slide.image"
+            type="button"
+            :aria-label="`Go to hero slide ${index + 1}`"
+            class="h-2.5 rounded-full transition-all"
+            :class="index === activeHeroSlide ? 'w-9 bg-white' : 'w-2.5 bg-white/60 hover:bg-white/90'"
+            @click="goToHeroSlide(index)"
+          />
+        </div>
+      </div>
+    </section>
 
     <section class="relative overflow-hidden rounded-[32px] border border-slate-200 bg-gradient-to-br from-sky-50 via-white to-red-50 p-8 shadow-2xl shadow-slate-300/40">
       <div class="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_35%)]" />
@@ -62,38 +283,54 @@ import { Head, Link } from '@inertiajs/vue3';
         </div>
       </div>
 
-      <div class="mt-10 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40">
-        <div class="animate-slide-left flex w-[200%] gap-4 py-6 px-4">
-          <div class="min-w-[320px] rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-blue-700">Family</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Kids, youth, and families</h3>
-            <p class="mt-3 text-slate-600">Safe spaces, joyful programs, and meaningful guidance for all ages.</p>
-          </div>
-          <div class="min-w-[320px] rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-red-700">Connect</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Small groups</h3>
-            <p class="mt-3 text-slate-600">Weekly gatherings for prayer, study, and real friendships.</p>
-          </div>
-          <div class="min-w-[320px] rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-blue-700">Grow</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Practical teaching</h3>
-            <p class="mt-3 text-slate-600">Real-life faith that helps you thrive each week.</p>
-          </div>
-          <div class="min-w-[320px] rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-red-700">Serve</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Community care</h3>
-            <p class="mt-3 text-slate-600">Local outreach, meals, and meaningful action together.</p>
-          </div>
-          <div class="min-w-[320px] rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-blue-700">Inspire</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Daily devotionals</h3>
-            <p class="mt-3 text-slate-600">Encouragement and scripture for life beyond Sunday.</p>
-          </div>
-          <div class="min-w-[320px] rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/70">
-            <p class="text-sm uppercase tracking-[0.2em] text-red-700">Gather</p>
-            <h3 class="mt-3 text-2xl font-semibold text-slate-900">Special events</h3>
-            <p class="mt-3 text-slate-600">Concerts, workshops, and community celebrations all year.</p>
-          </div>
+      <div
+        class="mt-10 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40"
+        @mouseenter="stopSlideTimer"
+        @mouseleave="startSlideTimer"
+      >
+        <div class="relative min-h-[248px] px-6 py-8 sm:min-h-[220px]">
+          <Transition name="fade" mode="out-in">
+            <div
+              :key="activeSlide"
+              :class="carouselSlides[activeSlide].cardClass"
+              class="rounded-[28px] border p-6 shadow-lg"
+            >
+              <p :class="carouselSlides[activeSlide].labelClass" class="text-sm uppercase tracking-[0.2em]">
+                {{ carouselSlides[activeSlide].label }}
+              </p>
+              <h3 class="mt-3 text-2xl font-semibold text-slate-900">{{ carouselSlides[activeSlide].title }}</h3>
+              <p class="mt-3 text-slate-600">{{ carouselSlides[activeSlide].text }}</p>
+            </div>
+          </Transition>
+
+          <button
+            type="button"
+            aria-label="Previous slide"
+            class="absolute left-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow hover:bg-slate-100"
+            @click="previousSlide"
+          >
+            <span aria-hidden="true">&#10094;</span>
+          </button>
+          <button
+            type="button"
+            aria-label="Next slide"
+            class="absolute right-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow hover:bg-slate-100"
+            @click="nextSlide"
+          >
+            <span aria-hidden="true">&#10095;</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 pb-6">
+          <button
+            v-for="(slide, index) in carouselSlides"
+            :key="slide.title"
+            type="button"
+            :aria-label="`Go to ${slide.label} slide`"
+            class="h-2.5 rounded-full transition-all"
+            :class="index === activeSlide ? 'w-8 bg-blue-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'"
+            @click="goToSlide(index)"
+          />
         </div>
       </div>
     </section>
@@ -127,6 +364,31 @@ import { Head, Link } from '@inertiajs/vue3';
       </article>
     </section>
 
+    <section class="mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/40">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-sm uppercase tracking-[0.25em] text-red-700">Church moments</p>
+          <h2 class="mt-3 text-3xl font-bold text-slate-900">Life at Redeemer in pictures</h2>
+        </div>
+        <p class="max-w-xl text-slate-600">A few moments from worship, fellowship, and serving together as a church family.</p>
+      </div>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <figure
+          v-for="(image, index) in homeGalleryImages"
+          :key="image"
+          class="group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
+        >
+          <img
+            :src="image"
+            :alt="`Redeemer church photo ${index + 1}`"
+            class="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
+            loading="lazy"
+          >
+        </figure>
+      </div>
+    </section>
+
     <section class="mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50">
       <div class="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
         <div class="space-y-5">
@@ -152,3 +414,26 @@ import { Head, Link } from '@inertiajs/vue3';
     </section>
   </Layout>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.hero-fade-enter-active,
+.hero-fade-leave-active {
+  transition: opacity 0.7s ease;
+}
+
+.hero-fade-enter-from,
+.hero-fade-leave-to {
+  opacity: 0;
+}
+</style>

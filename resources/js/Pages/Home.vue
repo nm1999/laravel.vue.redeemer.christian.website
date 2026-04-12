@@ -93,6 +93,7 @@ const activeSlide = ref(0);
 const activeHeroSlide = ref(0);
 let slideTimer = null;
 let heroSlideTimer = null;
+let scrollRevealObserver = null;
 
 const nextHeroSlide = () => {
   activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.length;
@@ -142,14 +143,49 @@ const stopSlideTimer = () => {
   }
 };
 
+const setupScrollReveal = () => {
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+
+  if (!revealElements.length) {
+    return;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    revealElements.forEach((element) => element.classList.add('is-visible'));
+    return;
+  }
+
+  scrollRevealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          scrollRevealObserver?.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.16,
+      rootMargin: '0px 0px -8% 0px',
+    },
+  );
+
+  revealElements.forEach((element) => {
+    scrollRevealObserver?.observe(element);
+  });
+};
+
 onMounted(() => {
   startHeroSlideTimer();
   startSlideTimer();
+  setupScrollReveal();
 });
 
 onBeforeUnmount(() => {
   stopHeroSlideTimer();
   stopSlideTimer();
+  scrollRevealObserver?.disconnect();
+  scrollRevealObserver = null;
 });
 </script>
 
@@ -229,7 +265,7 @@ onBeforeUnmount(() => {
     </section>
     <br>
 
-    <section class="relative overflow-hidden rounded-[32px] border border-slate-200 bg-gradient-to-br from-sky-50 via-white to-red-50 p-8 shadow-2xl shadow-slate-300/40">
+    <section class="scroll-reveal reveal-from-bottom relative overflow-hidden rounded-[32px] border border-slate-200 bg-gradient-to-br from-sky-50 via-white to-red-50 p-8 shadow-2xl shadow-slate-300/40">
       <div class="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_35%)]" />
       <div class="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-red-200/40 blur-3xl"></div>
       <div class="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-blue-200/60 blur-3xl"></div>
@@ -285,7 +321,8 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="mt-10 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40"
+        class="scroll-reveal reveal-from-bottom mt-10 overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl shadow-slate-200/40"
+        style="--reveal-delay: 120ms"
         @mouseenter="stopSlideTimer"
         @mouseleave="startSlideTimer"
       >
@@ -336,8 +373,8 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="mt-12 grid gap-8 lg:grid-cols-2">
-      <article class="rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60">
+    <section class="scroll-reveal reveal-from-bottom mt-12 grid gap-8 lg:grid-cols-2">
+      <article class="scroll-reveal reveal-from-left rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60" style="--reveal-delay: 70ms">
         <p class="text-sm uppercase tracking-[0.25em] text-red-700">What to expect</p>
         <h2 class="mt-4 text-3xl font-bold text-slate-900">A welcoming church with modern warmth</h2>
         <p class="mt-4 text-slate-600 leading-8">From easy parking and friendly greeters to inspiring teaching and a safe children’s area, we’ve designed every detail so your first visit feels natural and comfortable.</p>
@@ -348,7 +385,7 @@ onBeforeUnmount(() => {
         </ul>
       </article>
 
-      <article class="rounded-[32px] border border-slate-200 bg-blue-600/10 p-8 shadow-xl shadow-blue-100/70">
+      <article class="scroll-reveal reveal-from-right rounded-[32px] border border-slate-200 bg-blue-600/10 p-8 shadow-xl shadow-blue-100/70" style="--reveal-delay: 120ms">
         <p class="text-sm uppercase tracking-[0.25em] text-blue-700">Our heart</p>
         <h2 class="mt-4 text-3xl font-bold text-slate-900">Faith that serves the city</h2>
         <p class="mt-4 text-slate-700 leading-8">We believe faith is best lived in community. That means prayer, outreach, and practical help where it matters most.</p>
@@ -365,8 +402,8 @@ onBeforeUnmount(() => {
       </article>
     </section>
 
-    <section class="mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/40">
-      <div class="flex flex-wrap items-end justify-between gap-4">
+    <section class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/40">
+      <div class="scroll-reveal reveal-from-bottom flex flex-wrap items-end justify-between gap-4" style="--reveal-delay: 40ms">
         <div>
           <p class="text-sm uppercase tracking-[0.25em] text-red-700">Church moments</p>
           <h2 class="mt-3 text-3xl font-bold text-slate-900">Life at Redeemer in pictures</h2>
@@ -378,7 +415,9 @@ onBeforeUnmount(() => {
         <figure
           v-for="(image, index) in homeGalleryImages"
           :key="image"
-          class="group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
+          class="scroll-reveal group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
+          :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"
+          :style="{ '--reveal-delay': `${index * 90}ms` }"
         >
           <img
             :src="image"
@@ -390,7 +429,7 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <section class="mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50">
+    <section class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50" style="--reveal-delay: 80ms">
       <div class="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
         <div class="space-y-5">
           <p class="text-sm uppercase tracking-[0.25em] text-blue-700">Join the next event</p>
@@ -436,5 +475,37 @@ onBeforeUnmount(() => {
 .hero-fade-enter-from,
 .hero-fade-leave-to {
   opacity: 0;
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transition: transform 0.72s ease, opacity 0.72s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-from-left {
+  transform: translateX(-38px);
+}
+
+.reveal-from-right {
+  transform: translateX(38px);
+}
+
+.reveal-from-bottom {
+  transform: translateY(32px);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 </style>

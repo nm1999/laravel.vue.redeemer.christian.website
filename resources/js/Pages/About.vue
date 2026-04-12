@@ -3,6 +3,24 @@ import Layout from './Layout.vue';
 import { Head } from '@inertiajs/vue3';
 import { useScrollReveal } from '../composables/useScrollReveal';
 
+const leadershipTeam = [
+  {
+    image: '/images/20210513_180120.jpg',
+    name: 'Pastor Daniel Kato',
+    title: 'Senior Pastor',
+  },
+  {
+    image: '/images/IMG-20210413-WA0002.jpg',
+    name: 'Grace Nambasa',
+    title: 'Associate Pastor',
+  },
+  {
+    image: '/images/IMG_20210404_085754_156.jpg',
+    name: 'Samuel Ocen',
+    title: 'Worship Director',
+  },
+];
+
 useScrollReveal();
 </script>
 
@@ -75,6 +93,48 @@ useScrollReveal();
             <p class="mt-2 leading-7">Service projects, neighborhood support, and a place to serve others in love.</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="scroll-reveal reveal-from-bottom mt-12 grid gap-8 lg:grid-cols-2" style="--reveal-delay: 60ms">
+      <article class="scroll-reveal reveal-from-left rounded-[32px] border border-blue-100 bg-blue-50 p-8 shadow-2xl shadow-blue-100/50" style="--reveal-delay: 70ms">
+        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Vision</p>
+        <h2 class="mt-4 text-3xl font-semibold text-slate-900">To see lives transformed by Jesus in every home and generation.</h2>
+        <p class="mt-4 leading-8 text-slate-700">Our vision is a church family where people encounter Christ, discover purpose, and carry hope into schools, workplaces, and communities.</p>
+      </article>
+
+      <article class="scroll-reveal reveal-from-right rounded-[32px] border border-red-100 bg-red-50 p-8 shadow-2xl shadow-red-100/50" style="--reveal-delay: 130ms">
+        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-red-700">Mission</p>
+        <h2 class="mt-4 text-3xl font-semibold text-slate-900">Celebrate Christ, build disciples, and serve the city with love.</h2>
+        <p class="mt-4 leading-8 text-slate-700">We gather for worship, grow through practical teaching and small groups, and go out in compassion through outreach, prayer, and care.</p>
+      </article>
+    </section>
+
+    <section class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50" style="--reveal-delay: 70ms">
+      <div class="space-y-3">
+        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Leadership</p>
+        <h2 class="text-3xl font-semibold text-slate-900">Meet our church leaders</h2>
+        <p class="max-w-2xl text-slate-700">Add or update each profile with a photo, full name, and ministry title as your team grows.</p>
+      </div>
+
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <article
+          v-for="(leader, index) in leadershipTeam"
+          :key="leader.name"
+          class="scroll-reveal overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-lg shadow-slate-200/70"
+          :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"
+          :style="{ '--reveal-delay': `${index * 90}ms` }"
+        >
+          <img
+            :src="leader.image"
+            :alt="leader.name"
+            class="h-64 w-full object-cover"
+          >
+          <div class="p-6">
+            <h3 class="text-2xl font-semibold text-slate-900">{{ leader.name }}</h3>
+            <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">{{ leader.title }}</p>
+          </div>
+        </article>
       </div>
     </section>
   </Layout>

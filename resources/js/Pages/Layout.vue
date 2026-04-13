@@ -12,21 +12,29 @@ const navItems = [
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900">
     <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
-      <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:px-10 lg:px-16">
-        <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
-          <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700 shadow-inner shadow-blue-500/10">RC</span>
-          Redeemer Church
-        </Link>
+      <div class="mx-auto max-w-7xl px-6 py-5 sm:px-10 lg:px-16">
+        <div class="flex items-center justify-between gap-4">
+          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
+            <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700 shadow-inner shadow-blue-500/10">RC</span>
+            Redeemer Church
+          </Link>
 
-        <nav class="hidden items-center gap-8 md:flex">
-          <Link v-for="item in navItems" :key="item.href" :href="item.href" class="text-slate-700 transition hover:text-blue-700">
+          <nav class="hidden items-center gap-8 md:flex">
+            <Link v-for="item in navItems" :key="item.href" :href="item.href" class="text-slate-700 transition hover:text-blue-700">
+              {{ item.name }}
+            </Link>
+          </nav>
+
+          <Link href="/contact" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:px-5 sm:py-2.5">
+            Get in Touch
+          </Link>
+        </div>
+
+        <nav class="mt-4 flex items-center gap-5 overflow-x-auto pb-1 text-sm md:hidden">
+          <Link v-for="item in navItems" :key="`mobile-${item.href}`" :href="item.href" class="whitespace-nowrap text-slate-700 transition hover:text-blue-700">
             {{ item.name }}
           </Link>
         </nav>
-
-        <Link href="/contact" class="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
-          Get in Touch
-        </Link>
       </div>
     </header>
 

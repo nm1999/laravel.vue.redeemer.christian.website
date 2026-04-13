@@ -5,17 +5,17 @@ import { useScrollReveal } from '../composables/useScrollReveal';
 
 const leadershipTeam = [
   {
-    image: '/images/20210513_180120.jpg',
+    image: '/images/1.jpg',
     name: 'Pastor Daniel Kato',
     title: 'Senior Pastor',
   },
   {
-    image: '/images/IMG-20210413-WA0002.jpg',
+    image: '/images/2.jpg',
     name: 'Grace Nambasa',
     title: 'Associate Pastor',
   },
   {
-    image: '/images/IMG_20210404_085754_156.jpg',
+    image: '/images/3.jpg',
     name: 'Samuel Ocen',
     title: 'Worship Director',
   },

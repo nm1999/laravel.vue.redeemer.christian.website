@@ -4,40 +4,38 @@ import { Head, Link } from '@inertiajs/vue3';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const homeGalleryImages = [
-  '/images/20210513_180051.jpg',
-  '/images/20210513_180120.jpg',
-  '/images/20210513_180223.jpg',
-  '/images/IMG-20210329-WA0060.jpg',
-  '/images/IMG-20210406-WA0010.jpg',
-  '/images/IMG-20210413-WA0002.jpg',
-  '/images/IMG-20210418-WA0012.jpg',
-  '/images/IMG-20210503-WA0016.jpg',
-  '/images/IMG-20210531-WA0002.jpg',
-  '/images/IMG_20210404_085754_156.jpg',
-  '/images/IMG_20210425_110113_947.jpg',
+  '/images/1.jpg',
+  '/images/2.jpg',
+  '/images/3.jpg',
+  '/images/4.jpg',
+  '/images/1.jpg',
+  '/images/3.jpg',
+  '/images/4.jpg',
+  '/images/2.jpg',
+  '/images/1.jpg',
 ];
 
 const heroSlides = [
   {
-    image: '/images/20210513_180051.jpg',
+    image: '/images/1.jpg',
     kicker: 'Sunday Celebration',
     title: 'Church is family, not just an event.',
     description: 'Worship, community, and practical hope for every generation.',
   },
   {
-    image: '/images/IMG-20210418-WA0012.jpg',
+    image: '/images/2.jpg',
     kicker: 'Life At Redeemer',
     title: 'Belong, grow, and serve together.',
     description: 'Find real friendships, strong teaching, and a place to call home.',
   },
   {
-    image: '/images/IMG_20210425_110113_947.jpg',
+    image: '/images/3.jpg',
     kicker: 'Join This Weekend',
     title: 'A warm welcome is waiting for you.',
     description: 'Come as you are and experience faith that meets everyday life.',
   },
   {
-    image: '/images/IMG-20210503-WA0016.jpg',
+    image: '/images/4.jpg',
     kicker: 'Community Impact',
     title: 'Bringing hope to our city.',
     description: 'From prayer to outreach, we serve with love and purpose.',

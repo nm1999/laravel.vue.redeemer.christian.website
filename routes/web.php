@@ -168,15 +168,15 @@ $posts = [
 
 Route::get('/', function () {
     return Inertia::render('Home');
-});
+})->name('home');
 
 Route::get('/about', function () {
     return Inertia::render('About');
-});
+})->name('about');
 
 Route::get('/blog', function () use ($posts) {
     return Inertia::render('Blogs', ['posts' => $posts]);
-});
+})->name('blog.index');
 
 Route::get('/blog/{slug}', function ($slug) use ($posts) {
     $post = collect($posts)->firstWhere('slug', $slug);
@@ -186,10 +186,10 @@ Route::get('/blog/{slug}', function ($slug) use ($posts) {
     }
 
     return Inertia::render('BlogPost', ['post' => $post]);
-});
+})->name('blog.show');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact');
-});
+})->name('contact');
 
 require __DIR__.'/auth.php';

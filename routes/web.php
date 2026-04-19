@@ -1,195 +1,82 @@
 <?php
-use Illuminate\Foundation\Application;
+
+use App\Http\Controllers\DonationController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PrayerRequestController;
+use App\Models\Event;
+use App\Models\LiveStream;
+use App\Models\Sermon;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-$posts = [
-    [
-        'slug' => 'finding-peace',
-        'title' => 'Finding Peace in a Busy World',
-        'excerpt' => 'Simple faith practices for calm, purpose, and deep community connection.',
-        'date' => 'April 9, 2026',
-        'author' => 'Pastor Grace',
-        'image' => '/images/1.jpg',
-        'body1' => 'Community worship creates space for healing, rest, and renewed vision. When we gather together, we remember that faith is both personal and shared.',
-        'body2' => 'This week, discover practical ways to build quiet time, invite prayer into your routines, and serve your neighbors with hope.',
-    ],
-    [
-        'slug' => 'hope-through-service',
-        'title' => 'Hope Through Service',
-        'excerpt' => 'How serving others shapes our church and brings faith to life in the local neighborhood.',
-        'date' => 'April 2, 2026',
-        'author' => 'Ministry Team',
-        'image' => '/images/2.jpg',
-        'body1' => 'Service is more than a one-time activity. It is a rhythm of caring that reflects the heart of our church and connects us with the needs around us.',
-        'body2' => 'Join us for our next outreach event and help share support, meals, and encouragement with families in the community.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/3.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/4.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/1.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/2.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/3.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/4.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/1.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/2.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/3.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/4.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/1.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/2.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/3.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-    [
-        'slug' => 'living-faith-daily',
-        'title' => 'Living Faith Daily',
-        'excerpt' => 'Faith is not just a Sunday message. Learn how to carry God’s love into each part of your week.',
-        'date' => 'March 25, 2026',
-        'author' => 'Youth Leader Maria',
-        'image' => '/images/4.jpg',
-        'body1' => 'From morning routines to conversations at work, faith grows when we intentionally include gratitude, service, and sincere prayer.',
-        'body2' => 'Let these ideas inspire you to take small steps toward generosity, compassion, and spiritual growth this week.',
-    ],
-];
-
 Route::get('/', function () {
-    return Inertia::render('Home');
+    return Inertia::render('Home', [
+        'featuredEvents' => Event::query()->where('starts_at', '>=', now())->orderBy('starts_at')->limit(3)->get(),
+        'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
+    ]);
 })->name('home');
 
-Route::get('/about', function () {
-    return Inertia::render('About');
-})->name('about');
+Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
-Route::get('/blog', function () use ($posts) {
-    return Inertia::render('Blogs', ['posts' => $posts]);
+Route::get('/blog', function () {
+    return Inertia::render('Blogs', [
+        'posts' => Sermon::query()
+            ->where('is_published', true)
+            ->latest('preached_at')
+            ->get()
+            ->map(fn (Sermon $sermon) => [
+                'slug' => $sermon->slug,
+                'title' => $sermon->title,
+                'excerpt' => $sermon->excerpt,
+                'date' => optional($sermon->preached_at)->format('F j, Y'),
+                'author' => $sermon->speaker,
+                'image' => $sermon->image_path ?: '/images/1.jpg',
+                'body1' => $sermon->content,
+                'body2' => null,
+            ]),
+    ]);
 })->name('blog.index');
 
-Route::get('/blog/{slug}', function ($slug) use ($posts) {
-    $post = collect($posts)->firstWhere('slug', $slug);
-
-    if (! $post) {
-        abort(404);
-    }
-
-    return Inertia::render('BlogPost', ['post' => $post]);
+Route::get('/blog/{sermon:slug}', function (Sermon $sermon) {
+    return Inertia::render('BlogPost', [
+        'post' => [
+            'slug' => $sermon->slug,
+            'title' => $sermon->title,
+            'excerpt' => $sermon->excerpt,
+            'date' => optional($sermon->preached_at)->format('F j, Y'),
+            'author' => $sermon->speaker,
+            'image' => $sermon->image_path ?: '/images/1.jpg',
+            'body1' => $sermon->content,
+            'body2' => null,
+        ],
+    ]);
 })->name('blog.show');
 
-Route::get('/contact', function () {
-    return Inertia::render('Contact');
-})->name('contact');
+Route::get('/events', function () {
+    return Inertia::render('Events', [
+        'events' => Event::query()->orderBy('starts_at')->get(),
+    ]);
+})->name('events.index');
 
+Route::get('/events/{event:slug}', function (Event $event) {
+    return Inertia::render('Events', [
+        'events' => Event::query()->orderBy('starts_at')->get(),
+        'selectedEvent' => $event,
+    ]);
+})->name('events.show');
+
+Route::get('/contact', fn () => Inertia::render('Contact'))->name('contact');
+
+Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name('prayer-requests.create');
+Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
+
+Route::get('/donate', [DonationController::class, 'create'])->name('donate.create');
+Route::post('/donate', [DonationController::class, 'store'])->name('donate.store');
+Route::post('/donate/payment-intent', [DonationController::class, 'paymentIntent'])->name('donate.payment-intent');
+Route::get('/donate/success', [DonationController::class, 'success'])->name('donate.success');
+Route::get('/donate/failure', [DonationController::class, 'failure'])->name('donate.failure');
+
+Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+
+require __DIR__.'/admin.php';
 require __DIR__.'/auth.php';

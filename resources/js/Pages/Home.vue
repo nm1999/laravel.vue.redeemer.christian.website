@@ -3,6 +3,17 @@ import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
+defineProps({
+  featuredEvents: {
+    type: Array,
+    default: () => [],
+  },
+  activeLiveStream: {
+    type: Object,
+    default: null,
+  },
+});
+
 const homeGalleryImages = [
   '/images/1.jpg',
   '/images/2.jpg',
@@ -448,6 +459,33 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50" style="--reveal-delay: 100ms">
+      <h2 class="text-3xl font-bold text-slate-900">Upcoming events calendar</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <article v-for="event in featuredEvents" :key="event.id" class="rounded-2xl border border-slate-200 p-4">
+          <p class="text-sm text-slate-500">{{ new Date(event.starts_at).toLocaleString() }}</p>
+          <p class="mt-1 font-semibold text-slate-900">{{ event.title }}</p>
+          <p class="mt-2 text-sm text-slate-600">{{ event.location }}</p>
+        </article>
+      </div>
+      <Link href="/events" class="mt-5 inline-flex rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white">View all events</Link>
+    </section>
+
+    <section v-if="activeLiveStream?.embed_url" class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50" style="--reveal-delay: 120ms">
+      <h2 class="text-3xl font-bold text-slate-900">Watch Live</h2>
+      <p class="mt-2 text-slate-600">Join our current live service stream.</p>
+      <div class="mt-5 overflow-hidden rounded-2xl">
+        <iframe
+          class="h-[420px] w-full"
+          :src="activeLiveStream.embed_url"
+          title="Live Stream"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        />
       </div>
     </section>
   </Layout>

@@ -27,14 +27,16 @@ class LiveStreamController extends Controller
 
         $data['embed_url'] = $this->embedUrl($data['platform'], $data['url']);
 
-        LiveStream::query()->updateOrCreate(['id' => optional(LiveStream::query()->first())->id], $data);
+        $liveStream = LiveStream::query()->first();
+
+        LiveStream::query()->updateOrCreate(['id' => optional($liveStream)->id], $data);
 
         return back()->with('success', 'Live stream updated successfully.');
     }
 
     private function embedUrl(string $platform, string $url): string
     {
-        if ($platform === 'youtube' && preg_match('/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/', $url, $matches)) {
+        if ($platform === 'youtube' && preg_match('/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/', $url, $matches)) {
             return 'https://www.youtube.com/embed/'.$matches[1];
         }
 

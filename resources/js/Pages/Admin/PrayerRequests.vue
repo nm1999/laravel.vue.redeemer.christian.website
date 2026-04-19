@@ -1,13 +1,14 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({ requests: Array });
-const statusForms = {};
+const statusForms = ref({});
 const updateStatus = (id, status) => {
-  if (!statusForms[id]) statusForms[id] = useForm({ status });
-  statusForms[id].status = status;
-  statusForms[id].put(`/admin/prayer-requests/${id}`);
+  if (!statusForms.value[id]) statusForms.value[id] = useForm({ status });
+  statusForms.value[id].status = status;
+  statusForms.value[id].put(`/admin/prayer-requests/${id}`);
 };
 </script>
 

@@ -5,6 +5,8 @@ const navItems = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
+  { name: 'Events', href: '/events' },
+  { name: 'Give', href: '/donate' },
   { name: 'Contact', href: '/contact' },
 ];
 </script>
@@ -25,8 +27,8 @@ const navItems = [
             </Link>
           </nav>
 
-          <Link href="/contact" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:px-5 sm:py-2.5">
-            Get in Touch
+          <Link href="/donate" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:px-5 sm:py-2.5">
+            Give Online
           </Link>
         </div>
 
@@ -62,6 +64,10 @@ const navItems = [
             <p class="font-semibold text-slate-900">Email</p>
             <p>hello@redeemerchurch.org</p>
           </div>
+        </div>
+
+        <div class="text-sm">
+          <Link href="/donate" class="font-semibold text-blue-700 hover:text-blue-900">Support the ministry</Link>
         </div>
       </div>
     </footer>

@@ -1,68 +1,67 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-const navItems = [
+const page = usePage();
+const user = computed(() => page.props.auth?.user);
+
+const newsletterForm = useForm({ email: '' });
+const subscribe = () => {
+  newsletterForm.post('/newsletter/subscribe', {
+    preserveScroll: true,
+    onSuccess: () => newsletterForm.reset(),
+  });
+};
+
+const navItems = computed(() => [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Sermons', href: '/blog' },
+  { name: 'Events', href: '/events' },
+  { name: 'Prayer', href: '/prayer-requests' },
+  { name: 'Donate', href: '/donate' },
   { name: 'Contact', href: '/contact' },
-];
+]);
 </script>
 
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900">
     <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
-      <div class="mx-auto max-w-7xl px-6 py-5 sm:px-10 lg:px-16">
-        <div class="flex items-center justify-between gap-4">
-          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
-            <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700 shadow-inner shadow-blue-500/10">RC</span>
-            Redeemer Church
-          </Link>
-
-          <nav class="hidden items-center gap-8 md:flex">
-            <Link v-for="item in navItems" :key="item.href" :href="item.href" class="text-slate-700 transition hover:text-blue-700">
-              {{ item.name }}
-            </Link>
-          </nav>
-
-          <Link href="/contact" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:px-5 sm:py-2.5">
-            Get in Touch
-          </Link>
-        </div>
-
-        <nav class="mt-4 flex items-center gap-5 overflow-x-auto pb-1 text-sm md:hidden">
-          <Link v-for="item in navItems" :key="`mobile-${item.href}`" :href="item.href" class="whitespace-nowrap text-slate-700 transition hover:text-blue-700">
-            {{ item.name }}
-          </Link>
+      <div class="mx-auto max-w-7xl px-6 py-4 sm:px-10 lg:px-16 flex items-center justify-between gap-4">
+        <Link href="/" class="text-xl font-semibold">Redeemer Church</Link>
+        <nav class="hidden md:flex items-center gap-4 text-sm">
+          <Link v-for="item in navItems" :key="item.href" :href="item.href" class="hover:text-blue-700">{{ item.name }}</Link>
+          <Link v-if="user?.is_admin" href="/admin/dashboard" class="font-semibold text-blue-700">Admin</Link>
+          <Link v-if="!user" href="/admin/login" class="font-semibold text-blue-700">Login</Link>
         </nav>
       </div>
     </header>
 
-    <main class="px-6 py-8 sm:px-10 lg:px-16">
+    <main class="mx-auto max-w-7xl px-6 py-8 sm:px-10 lg:px-16">
+      <div v-if="$page.props.flash?.success" class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+        {{ $page.props.flash.success }}
+      </div>
       <slot />
     </main>
 
-    <footer class="border-t border-slate-200 bg-slate-100 px-6 py-12 text-slate-600 sm:px-10 lg:px-16">
-      <div class="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
+    <footer class="border-t border-slate-200 bg-white mt-12">
+      <div class="mx-auto max-w-7xl px-6 py-8 sm:px-10 lg:px-16 grid gap-6 md:grid-cols-3 text-sm">
         <div>
-          <h2 class="text-lg font-semibold text-slate-900">Redeemer Christian Church</h2>
-          <p class="max-w-xl text-sm leading-6 text-slate-600">A warm community blessed by worship, connection, and joyful service.</p>
+          <h3 class="font-semibold">Contact</h3>
+          <p>123 Faith Avenue, Kampala</p>
+          <p>+256 700 000 000</p>
+          <p>hello@redeemerchurch.org</p>
         </div>
-
-        <div class="grid gap-4 text-sm sm:grid-cols-3">
-          <div>
-            <p class="font-semibold text-slate-900">Worship</p>
-            <p>Sunday 10AM</p>
-          </div>
-          <div>
-            <p class="font-semibold text-slate-900">Location</p>
-            <p>123 Faith Avenue</p>
-          </div>
-          <div>
-            <p class="font-semibold text-slate-900">Email</p>
-            <p>hello@redeemerchurch.org</p>
-          </div>
+        <div>
+          <h3 class="font-semibold">Service Times</h3>
+          <p>Sunday: 10:00 AM</p>
+          <p>Wednesday: 6:30 PM</p>
         </div>
+        <form class="space-y-2" @submit.prevent="subscribe">
+          <h3 class="font-semibold">Newsletter</h3>
+          <input v-model="newsletterForm.email" type="email" required class="w-full rounded border border-slate-300 px-3 py-2" placeholder="Email address" />
+          <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="newsletterForm.processing">Subscribe</button>
+        </form>
       </div>
     </footer>
   </div>

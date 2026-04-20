@@ -156,7 +156,7 @@ onBeforeUnmount(() => {
       <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <article
           v-for="(leader, index) in leadershipTeam"
-          :key="leader.id ?? leader.name"
+          :key="leader.id"
           data-leader-reveal
           class="scroll-reveal overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-lg shadow-slate-200/70"
           :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"

@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
 
-class AdminAuthController extends Controller
+class AuthenticatedSessionController extends Controller
 {
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -22,30 +24,20 @@ class AdminAuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors([
-                'email' => 'Invalid login details.',
-            ]);
+            return back()->withErrors(['email' => 'Invalid credentials.']);
         }
 
         $request->session()->regenerate();
 
-        if (! $request->user()->isAdmin()) {
-            Auth::logout();
-
-            return back()->withErrors([
-                'email' => 'You do not have admin access.',
-            ]);
-        }
-
-        return redirect()->intended(route('admin.dashboard'));
+        return redirect()->intended('/admin');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect('/');
     }
 }

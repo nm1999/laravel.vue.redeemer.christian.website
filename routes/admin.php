@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\ChurchLeaderController;
 use App\Http\Controllers\Admin\LiveStreamController;
 use App\Http\Controllers\Admin\PrayerRequestController;
 use App\Http\Controllers\Admin\SermonController;
@@ -15,12 +16,14 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', DashboardController::class)->name('index');
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
 
     Route::resource('sermons', SermonController::class)->except(['show']);
     Route::resource('events', EventController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
+    Route::resource('church-leaders', ChurchLeaderController::class)->except(['show']);
 
     Route::get('/live-stream', [LiveStreamController::class, 'edit'])->name('live-stream.edit');
     Route::put('/live-stream', [LiveStreamController::class, 'update'])->name('live-stream.update');

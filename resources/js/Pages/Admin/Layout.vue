@@ -5,6 +5,7 @@ const links = [
   { name: 'Dashboard', href: '/admin' },
   { name: 'Sermons', href: '/admin/sermons' },
   { name: 'Events', href: '/admin/events' },
+  { name: 'Church Leaders', href: '/admin/church-leaders' },
   { name: 'Live Stream', href: '/admin/live-stream' },
   { name: 'Prayer Requests', href: '/admin/prayer-requests' },
 ];

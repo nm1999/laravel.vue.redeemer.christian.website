@@ -1,27 +1,63 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head } from '@inertiajs/vue3';
+import axios from 'axios';
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useScrollReveal } from '../composables/useScrollReveal';
 
-const leadershipTeam = [
-  {
-    image: '/images/1.jpg',
-    name: 'Pastor Daniel Kato',
-    title: 'Senior Pastor',
-  },
-  {
-    image: '/images/2.jpg',
-    name: 'Grace Nambasa',
-    title: 'Associate Pastor',
-  },
-  {
-    image: '/images/3.jpg',
-    name: 'Samuel Ocen',
-    title: 'Worship Director',
-  },
-];
+const leadershipTeam = ref([]);
+let leaderObserver = null;
 
 useScrollReveal();
+
+const observeLeaderCards = () => {
+  const leaderCards = document.querySelectorAll('[data-leader-reveal]');
+
+  if (!leaderCards.length) {
+    return;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    leaderCards.forEach((element) => element.classList.add('is-visible'));
+    return;
+  }
+
+  leaderObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          leaderObserver?.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.16,
+      rootMargin: '0px 0px -8% 0px',
+    },
+  );
+
+  leaderCards.forEach((element) => {
+    leaderObserver?.observe(element);
+  });
+};
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/api/church-leaders');
+    leadershipTeam.value = response.data.data;
+  } catch {
+    leadershipTeam.value = [];
+  }
+
+  await nextTick();
+  observeLeaderCards();
+});
+
+onBeforeUnmount(() => {
+  leaderObserver?.disconnect();
+  leaderObserver = null;
+});
 </script>
 
 <template>
@@ -120,7 +156,8 @@ useScrollReveal();
       <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <article
           v-for="(leader, index) in leadershipTeam"
-          :key="leader.name"
+          :key="leader.id ?? leader.name"
+          data-leader-reveal
           class="scroll-reveal overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-lg shadow-slate-200/70"
           :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"
           :style="{ '--reveal-delay': `${index * 90}ms` }"
@@ -133,6 +170,7 @@ useScrollReveal();
           <div class="p-6">
             <h3 class="text-2xl font-semibold text-slate-900">{{ leader.name }}</h3>
             <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">{{ leader.title }}</p>
+            <p v-if="leader.bio" class="mt-3 text-sm leading-6 text-slate-600">{{ leader.bio }}</p>
           </div>
         </article>
       </div>

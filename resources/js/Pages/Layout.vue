@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/vue3';
 
 const navItems = [
   { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
+  { name: 'About Us', href: '/about' },
   { name: 'Blog', href: '/blog' },
   { name: 'Events', href: '/events' },
   { name: 'Give', href: '/donate' },

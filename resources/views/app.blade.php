@@ -27,7 +27,7 @@
         <meta name="twitter:description" content="{{ $siteDescription }}">
         <meta name="twitter:image" content="{{ $siteImage }}">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Redeemer Christain Church') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

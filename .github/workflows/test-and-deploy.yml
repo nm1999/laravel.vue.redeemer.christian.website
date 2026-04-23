@@ -1,11 +1,30 @@
-name: Deploy Laravel Vue to Namecheap
+name: Laravel CI/CD
 
 on:
   push:
     branches: [ main ]
 
 jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Run Tests
+        run: php artisan test
+
   deploy:
+    needs: ci   # 👈 THIS IS THE KEY
     runs-on: ubuntu-latest
 
     steps:

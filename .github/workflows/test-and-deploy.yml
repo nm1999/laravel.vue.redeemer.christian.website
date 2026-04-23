@@ -18,7 +18,7 @@ jobs:
           php-version: 8.2
 
       - name: Install Composer Dependencies
-        run: composer install --no-dev --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run Tests
         run: vendor/bin/phpunit

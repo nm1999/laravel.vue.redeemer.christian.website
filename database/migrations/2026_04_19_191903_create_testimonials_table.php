@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('content');
+            $table->string('role')->nullable();
+            $table->text('quote');
             $table->boolean('is_published')->default(true);
             $table->timestamps();
         });

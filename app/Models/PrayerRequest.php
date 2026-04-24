@@ -12,15 +12,17 @@ class PrayerRequest extends Model
     protected $fillable = [
         'name',
         'email',
-        'request_text',
+        'request',
         'is_private',
         'status',
+        'reviewed_at',
     ];
 
     protected function casts(): array
     {
         return [
             'is_private' => 'boolean',
+            'reviewed_at' => 'datetime',
         ];
     }
 }

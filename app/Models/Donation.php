@@ -5,26 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sermon extends Model
+class Donation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'slug',
-        'speaker',
-        'preached_at',
-        'excerpt',
-        'content',
-        'video_url',
-        'is_published',
+        'name',
+        'email',
+        'amount',
+        'currency',
+        'stripe_payment_intent_id',
+        'status',
+        'message',
     ];
 
     protected function casts(): array
     {
         return [
-            'preached_at' => 'date',
-            'is_published' => 'boolean',
+            'amount' => 'decimal:2',
         ];
     }
 }

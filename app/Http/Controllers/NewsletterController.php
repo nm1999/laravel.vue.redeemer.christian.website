@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\NewsletterSubscriber;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $data = $request->validate([
             'email' => ['required', 'email', 'max:255'],
@@ -19,6 +18,6 @@ class NewsletterController extends Controller
             ['subscribed_at' => now()]
         );
 
-        return back();
+        return back()->with('success', 'You have been subscribed.');
     }
 }

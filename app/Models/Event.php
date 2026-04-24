@@ -14,10 +14,11 @@ class Event extends Model
         'slug',
         'description',
         'location',
-        'image_path',
         'starts_at',
         'ends_at',
+        'image_url',
         'is_featured',
+        'is_published',
     ];
 
     protected function casts(): array
@@ -26,6 +27,7 @@ class Event extends Model
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'is_featured' => 'boolean',
+            'is_published' => 'boolean',
         ];
     }
 }

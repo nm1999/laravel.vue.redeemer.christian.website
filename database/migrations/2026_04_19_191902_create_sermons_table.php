@@ -12,11 +12,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string('speaker');
+            $table->date('preached_at');
             $table->text('excerpt')->nullable();
-            $table->longText('content')->nullable();
-            $table->string('image_path')->nullable();
-            $table->string('speaker')->nullable();
-            $table->timestamp('preached_at')->nullable();
+            $table->longText('content');
+            $table->string('video_url')->nullable();
             $table->boolean('is_published')->default(true);
             $table->timestamps();
         });

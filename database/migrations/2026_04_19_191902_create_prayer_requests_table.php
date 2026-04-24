@@ -12,9 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->nullable();
-            $table->text('request_text');
+            $table->text('request');
             $table->boolean('is_private')->default(true);
             $table->string('status')->default('new');
+            $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
         });
     }

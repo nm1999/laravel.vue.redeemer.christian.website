@@ -4,80 +4,64 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class EventController extends Controller
 {
-    public function index(): Response
+    public function index()
     {
         return Inertia::render('Admin/Events/Index', [
-            'events' => Event::orderBy('starts_at')->get(),
+            'events' => Event::query()->orderBy('starts_at')->get(),
         ]);
     }
 
-    public function create(): Response
+    public function create()
     {
         return Inertia::render('Admin/Events/Create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'image_path' => ['nullable', 'string', 'max:255'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'is_featured' => ['boolean'],
-        ]);
+        Event::create($this->validatedData($request));
 
-        $data['slug'] = Str::slug($data['title']).'-'.Str::lower(Str::random(6));
-        $data['is_featured'] = $request->boolean('is_featured', false);
-
-        Event::create($data);
-
-        return to_route('admin.events.index');
+        return redirect()->route('admin.events.index')->with('success', 'Event created successfully.');
     }
 
-    public function edit(Event $event): Response
+    public function edit(Event $event)
     {
         return Inertia::render('Admin/Events/Edit', [
             'event' => $event,
         ]);
     }
 
-    public function update(Request $request, Event $event): RedirectResponse
+    public function update(Request $request, Event $event)
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'image_path' => ['nullable', 'string', 'max:255'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'is_featured' => ['boolean'],
-        ]);
+        $event->update($this->validatedData($request, $event));
 
-        if ($event->title !== $data['title']) {
-            $data['slug'] = Str::slug($data['title']).'-'.Str::lower(Str::random(6));
-        }
-
-        $data['is_featured'] = $request->boolean('is_featured', false);
-
-        $event->update($data);
-
-        return to_route('admin.events.index');
+        return redirect()->route('admin.events.index')->with('success', 'Event updated successfully.');
     }
 
-    public function destroy(Event $event): RedirectResponse
+    public function destroy(Event $event)
     {
         $event->delete();
 
-        return to_route('admin.events.index');
+        return back()->with('success', 'Event deleted successfully.');
+    }
+
+    private function validatedData(Request $request, ?Event $event = null): array
+    {
+        return $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', Rule::unique('events', 'slug')->ignore($event)],
+            'description' => ['required', 'string'],
+            'location' => ['required', 'string', 'max:255'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'image_url' => ['nullable', 'url', 'max:2048'],
+            'is_featured' => ['boolean'],
+            'is_published' => ['boolean'],
+        ]);
     }
 }

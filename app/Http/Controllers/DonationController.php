@@ -2,66 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Donation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
-use Stripe\Exception\ApiErrorException;
-use Stripe\PaymentIntent;
-use Stripe\Stripe;
+use Stripe\StripeClient;
 
 class DonationController extends Controller
 {
-    public function create(): Response
+    public function index()
     {
         return Inertia::render('Donate', [
-            'publicKey' => config('services.stripe.key'),
+            'stripeKey' => config('services.stripe.key'),
         ]);
     }
 
-    public function success(): Response
-    {
-        return Inertia::render('Donate', ['status' => 'success']);
-    }
-
-    public function failure(): Response
-    {
-        return Inertia::render('Donate', ['status' => 'failure']);
-    }
-
-    /**
-     * @throws ApiErrorException
-     */
-    public function paymentIntent(Request $request): JsonResponse
+    public function createIntent(Request $request)
     {
         $data = $request->validate([
-            'amount' => ['required', 'integer', 'min:100'],
-            'currency' => ['nullable', 'string', 'size:3'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'amount' => ['required', 'numeric', 'min:1'],
+            'message' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $secret = config('services.stripe.secret');
-        if (! $secret) {
-            return response()->json([
-                'client_secret' => 'demo_mode',
-            ]);
+        if (! config('services.stripe.secret')) {
+            return back()->withErrors(['amount' => 'Stripe is not configured yet.']);
         }
 
-        Stripe::setApiKey($secret);
+        $stripe = new StripeClient(config('services.stripe.secret'));
 
-        $intent = PaymentIntent::create([
-            'amount' => $data['amount'],
-            'currency' => strtolower($data['currency'] ?? 'usd'),
+        $intent = $stripe->paymentIntents->create([
+            'amount' => (int) round($data['amount'] * 100),
+            'currency' => 'usd',
             'automatic_payment_methods' => ['enabled' => true],
+            'receipt_email' => $data['email'],
+            'metadata' => ['name' => $data['name']],
         ]);
 
-        return response()->json([
-            'client_secret' => $intent->client_secret,
+        Donation::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'amount' => $data['amount'],
+            'currency' => 'usd',
+            'stripe_payment_intent_id' => $intent->id,
+            'status' => $intent->status,
+            'message' => $data['message'] ?? null,
         ]);
+
+        return back()->with('success', 'Donation intent created. Complete payment in Stripe checkout flow.');
     }
 
-    public function store(): RedirectResponse
+    public function success()
     {
-        return to_route('donate.success');
+        return Inertia::render('Donate', [
+            'stripeKey' => config('services.stripe.key'),
+            'status' => 'success',
+        ]);
     }
 }

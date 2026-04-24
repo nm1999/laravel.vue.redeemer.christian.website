@@ -1,28 +1,35 @@
 <script setup>
 import Layout from './Layout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-defineProps({ events: Array, selectedEvent: Object });
+const props = defineProps({ events: Array, focusedSlug: String });
+
+const calendar = computed(() => {
+  const grouped = {};
+  for (const event of props.events) {
+    const key = new Date(event.starts_at).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    grouped[key] ??= [];
+    grouped[key].push(event);
+  }
+  return grouped;
+});
 </script>
 
 <template>
   <Layout>
     <Head title="Events" />
-    <section class="rounded-3xl border border-slate-200 bg-white p-8">
-      <h1 class="text-3xl font-bold">Events</h1>
-      <p class="mt-2 text-slate-600">See upcoming services and programs.</p>
-      <div class="mt-6 grid gap-4 lg:grid-cols-2">
-        <article v-for="event in events" :key="event.id" class="rounded-xl border p-4">
-          <p class="text-sm text-slate-500">{{ new Date(event.starts_at).toLocaleString() }}</p>
-          <h2 class="mt-1 text-xl font-semibold">{{ event.title }}</h2>
-          <p class="mt-2 text-slate-600">{{ event.description }}</p>
-          <p class="mt-2 text-sm text-slate-500">{{ event.location }}</p>
-          <Link :href="`/events/${event.slug}`" class="mt-3 inline-block text-blue-700">View details</Link>
-        </article>
-      </div>
-      <div v-if="selectedEvent" class="mt-8 rounded-xl bg-slate-100 p-5">
-        <h3 class="text-xl font-semibold">Selected Event: {{ selectedEvent.title }}</h3>
-        <p class="mt-2">{{ selectedEvent.description }}</p>
+    <section class="rounded-3xl bg-white p-8 border border-slate-200">
+      <h1 class="text-3xl font-bold">Events Calendar</h1>
+      <div class="mt-6 space-y-6" v-for="(items, month) in calendar" :key="month">
+        <h2 class="text-xl font-semibold">{{ month }}</h2>
+        <div class="grid gap-4 md:grid-cols-2">
+          <article v-for="event in items" :key="event.id" class="rounded-xl border p-4" :class="focusedSlug === event.slug ? 'border-blue-500' : 'border-slate-200'">
+            <h3 class="font-semibold">{{ event.title }}</h3>
+            <p class="text-sm text-slate-500">{{ new Date(event.starts_at).toLocaleString() }} · {{ event.location }}</p>
+            <p class="mt-2">{{ event.description }}</p>
+          </article>
+        </div>
       </div>
     </section>
   </Layout>

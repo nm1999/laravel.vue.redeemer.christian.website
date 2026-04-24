@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('live_streams', function (Blueprint $table) {
             $table->id();
             $table->string('platform')->default('youtube');
+            $table->string('title')->default('Join us live');
+            $table->string('url');
             $table->string('embed_url');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

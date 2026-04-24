@@ -11,6 +11,8 @@ class LiveStream extends Model
 
     protected $fillable = [
         'platform',
+        'title',
+        'url',
         'embed_url',
         'is_active',
     ];

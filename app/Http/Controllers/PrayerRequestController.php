@@ -3,31 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\PrayerRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class PrayerRequestController extends Controller
 {
-    public function create(): Response
+    public function index()
     {
-        return Inertia::render('PrayerRequests');
+        return Inertia::render('PrayerRequests', [
+            'publicRequests' => PrayerRequest::query()
+                ->where('is_private', false)
+                ->latest()
+                ->limit(20)
+                ->get(),
+        ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $data = $request->validate([
+        PrayerRequest::create($request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            'request_text' => ['required', 'string', 'min:5'],
+            'request' => ['required', 'string', 'max:5000'],
             'is_private' => ['boolean'],
-        ]);
+        ]));
 
-        $data['is_private'] = $request->boolean('is_private', true);
-
-        PrayerRequest::create($data);
-
-        return back();
+        return back()->with('success', 'Prayer request submitted successfully.');
     }
 }

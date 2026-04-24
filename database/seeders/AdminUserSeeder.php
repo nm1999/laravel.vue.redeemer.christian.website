@@ -4,28 +4,27 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL', 'admin@redeemerchurch.org');
-        $password = env('ADMIN_PASSWORD', 'Admin@12345');
+        $adminPassword = env('ADMIN_PASSWORD');
+
+        if (! $adminPassword) {
+            $adminPassword = Str::random(24);
+            $this->command?->warn('ADMIN_PASSWORD is not set. Generated temporary admin password: '.$adminPassword);
+        }
 
         User::query()->updateOrCreate(
-            ['email' => $email],
+            ['email' => 'admin@redeemerchurch.org'],
             [
                 'name' => 'Admin User',
-                'password' => $password,
-                'role' => 'admin',
-                'email_verified_at' => now(),
+                'password' => Hash::make($adminPassword),
+                'is_admin' => true,
             ]
         );
-
-        if ($this->command) {
-            $this->command->info('Admin user seeded successfully.');
-            $this->command->line("Email: {$email}");
-            $this->command->line("Password: {$password}");
-        }
     }
 }

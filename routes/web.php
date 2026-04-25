@@ -5,6 +5,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PrayerRequestController;
 use App\Models\ChurchLeader;
 use App\Models\Event;
+use App\Models\HeroSlide;
 use App\Models\LiveStream;
 use App\Models\Sermon;
 use Illuminate\Support\Facades\Artisan;
@@ -14,6 +15,18 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Home', [
         'featuredEvents' => Event::query()->where('starts_at', '>=', now())->orderBy('starts_at')->limit(3)->get(),
+        'heroSlides' => HeroSlide::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (HeroSlide $heroSlide) => [
+                'image' => $heroSlide->image_url,
+                'kicker' => $heroSlide->kicker,
+                'title' => $heroSlide->title,
+                'description' => $heroSlide->description,
+            ])
+            ->values(),
         'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
     ]);
 })->name('home');

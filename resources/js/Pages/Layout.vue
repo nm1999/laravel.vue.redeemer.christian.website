@@ -46,9 +46,8 @@ const socialLinks = [
 
       <div class="mx-auto max-w-7xl px-6 py-5 sm:px-10 lg:px-16">
         <div class="flex items-center justify-between gap-4">
-          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
-            <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700 shadow-inner shadow-blue-500/10">RC</span>
-            Redeemer Church
+          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900" style="width:45%;height:45%;">
+            <img src="images/logo.jpg" alt="Redeemer Christian Church Logo" style="width:50%;height:50%;" >
           </Link>
 
           <nav class="hidden items-center gap-8 md:flex">

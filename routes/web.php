@@ -7,6 +7,7 @@ use App\Models\ChurchLeader;
 use App\Models\Event;
 use App\Models\LiveStream;
 use App\Models\Sermon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -96,6 +97,15 @@ Route::get('/donate/success', [DonationController::class, 'success'])->name('don
 Route::get('/donate/failure', [DonationController::class, 'failure'])->name('donate.failure');
 
 Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+
+Route::get('/storage-link', function () {
+    Artisan::call('storage:link');
+
+    return response()->json([
+        'message' => 'Storage link command executed.',
+        'output' => trim(Artisan::output()),
+    ]);
+})->name('storage.link');
 
 require __DIR__.'/admin.php';
 require __DIR__.'/auth.php';

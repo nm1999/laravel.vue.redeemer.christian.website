@@ -3,7 +3,7 @@ import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-const homeGalleryImages = [
+const defaultHomeGalleryImages = [
   '/images/1.jpg',
   '/images/2.jpg',
   '/images/3.jpg',
@@ -47,6 +47,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  homeGalleryImages: {
+    type: Array,
+    default: () => [],
+  },
   heroSlides: {
     type: Array,
     default: () => [],
@@ -57,6 +61,7 @@ const props = defineProps({
   },
 });
 
+const homeGalleryImages = props.homeGalleryImages.length ? props.homeGalleryImages : defaultHomeGalleryImages;
 const heroSlides = props.heroSlides.length ? props.heroSlides : defaultHeroSlides;
 
 const carouselSlides = [

@@ -6,6 +6,7 @@ use App\Http\Controllers\PrayerRequestController;
 use App\Models\ChurchLeader;
 use App\Models\Event;
 use App\Models\HeroSlide;
+use App\Models\HomeGalleryImage;
 use App\Models\LiveStream;
 use App\Models\Sermon;
 use Illuminate\Support\Facades\Artisan;
@@ -26,6 +27,13 @@ Route::get('/', function () {
                 'title' => $heroSlide->title,
                 'description' => $heroSlide->description,
             ])
+            ->values(),
+        'homeGalleryImages' => HomeGalleryImage::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
             ->values(),
         'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
     ]);

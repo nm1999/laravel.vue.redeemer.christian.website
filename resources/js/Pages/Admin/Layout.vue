@@ -6,6 +6,8 @@ const links = [
   { name: 'Sermons', href: '/admin/sermons' },
   { name: 'Events', href: '/admin/events' },
   { name: 'Church Leaders', href: '/admin/church-leaders' },
+  { name: 'Hero Slides', href: '/admin/hero-slides' },
+  { name: 'Home Gallery', href: '/admin/home-gallery-images' },
   { name: 'Live Stream', href: '/admin/live-stream' },
   { name: 'Prayer Requests', href: '/admin/prayer-requests' },
 ];

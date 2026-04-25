@@ -3,18 +3,7 @@ import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-defineProps({
-  featuredEvents: {
-    type: Array,
-    default: () => [],
-  },
-  activeLiveStream: {
-    type: Object,
-    default: null,
-  },
-});
-
-const homeGalleryImages = [
+const defaultHomeGalleryImages = [
   '/images/1.jpg',
   '/images/2.jpg',
   '/images/3.jpg',
@@ -26,7 +15,7 @@ const homeGalleryImages = [
   '/images/1.jpg',
 ];
 
-const heroSlides = [
+const defaultHeroSlides = [
   {
     image: '/images/1.jpg',
     kicker: 'Sunday Celebration',
@@ -52,6 +41,28 @@ const heroSlides = [
     description: 'From prayer to outreach, we serve with love and purpose.',
   },
 ];
+
+const props = defineProps({
+  featuredEvents: {
+    type: Array,
+    default: () => [],
+  },
+  homeGalleryImages: {
+    type: Array,
+    default: () => [],
+  },
+  heroSlides: {
+    type: Array,
+    default: () => [],
+  },
+  activeLiveStream: {
+    type: Object,
+    default: null,
+  },
+});
+
+const homeGalleryImages = props.homeGalleryImages.length ? props.homeGalleryImages : defaultHomeGalleryImages;
+const heroSlides = props.heroSlides.length ? props.heroSlides : defaultHeroSlides;
 
 const carouselSlides = [
   {

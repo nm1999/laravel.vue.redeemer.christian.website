@@ -52,7 +52,8 @@ class HomeGalleryImageController extends Controller
             return response()->json($this->formatHomeGalleryImage($homeGalleryImage), 201);
         }
 
-        return to_route('admin.home-gallery-images.index');
+
+        return redirect('/admin/home-gallery-images');
     }
 
     public function edit(HomeGalleryImage $homeGalleryImage): Response
@@ -81,7 +82,7 @@ class HomeGalleryImageController extends Controller
             return response()->json($this->formatHomeGalleryImage($homeGalleryImage->fresh()));
         }
 
-        return to_route('admin.home-gallery-images.index');
+        return redirect('/admin/home-gallery-images');
     }
 
     public function destroy(Request $request, HomeGalleryImage $homeGalleryImage): RedirectResponse|JsonResponse
@@ -93,7 +94,7 @@ class HomeGalleryImageController extends Controller
             return response()->json([], 204);
         }
 
-        return to_route('admin.home-gallery-images.index');
+        return redirect('/admin/home-gallery-images');
     }
 
     private function formatHomeGalleryImage(HomeGalleryImage $homeGalleryImage): array

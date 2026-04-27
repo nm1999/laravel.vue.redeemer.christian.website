@@ -54,7 +54,8 @@ class ChurchLeaderController extends Controller
             return response()->json($this->formatChurchLeader($churchLeader), 201);
         }
 
-        return to_route('admin.church-leaders.index');
+        return redirect('/admin/church-leaders');
+        // return to_route('admin.church-leaders.index');
     }
 
     public function show(ChurchLeader $churchLeader): JsonResponse
@@ -90,7 +91,8 @@ class ChurchLeaderController extends Controller
             return response()->json($this->formatChurchLeader($churchLeader->fresh()));
         }
 
-        return to_route('admin.church-leaders.index');
+        return redirect('/admin/church-leaders');
+        // return to_route('admin.church-leaders.index');
     }
 
     public function destroy(Request $request, ChurchLeader $churchLeader): RedirectResponse|JsonResponse
@@ -102,7 +104,8 @@ class ChurchLeaderController extends Controller
             return response()->json([], 204);
         }
 
-        return to_route('admin.church-leaders.index');
+        return redirect('/admin/church-leaders');
+        // return to_route('admin.church-leaders.index');
     }
 
     private function formatChurchLeader(ChurchLeader $churchLeader): array

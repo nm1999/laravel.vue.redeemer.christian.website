@@ -41,7 +41,7 @@ class SermonController extends Controller
 
         Sermon::create($data);
 
-        return to_route('admin.sermons.index');
+        return redirect('/admin/sermons');
     }
 
     public function edit(Sermon $sermon): Response
@@ -71,13 +71,13 @@ class SermonController extends Controller
 
         $sermon->update($data);
 
-        return to_route('admin.sermons.index');
+        return redirect('/admin/sermons');
     }
 
     public function destroy(Sermon $sermon): RedirectResponse
     {
         $sermon->delete();
 
-        return to_route('admin.sermons.index');
+        return redirect('/admin/sermons');
     }
 }

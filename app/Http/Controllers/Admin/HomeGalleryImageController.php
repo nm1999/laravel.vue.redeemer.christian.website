@@ -89,4 +89,22 @@ class HomeGalleryImageController extends Controller
 
         return redirect('/admin/home-gallery-images')->with('success', 'Image deleted successfully.');
     }
+
+    public function edit(HomeGalleryImage $homeGalleryImage): Response
+    {
+        return Inertia::render('Admin/HomeGalleryImages/Edit', [
+            'homeGalleryImage' => $this->formatHomeGalleryImage($homeGalleryImage),
+        ]);
+    }
+
+    private function formatHomeGalleryImage(HomeGalleryImage $homeGalleryImage): array
+    {
+        return [
+            'id'        => $homeGalleryImage->id,
+            'image'     => $homeGalleryImage->image,
+            'image_url' => $homeGalleryImage->image ? Storage::disk('public')->url($homeGalleryImage->image) : null,
+            'order'     => $homeGalleryImage->order,
+            'is_active' => $homeGalleryImage->is_active,
+        ];
+    }
 }

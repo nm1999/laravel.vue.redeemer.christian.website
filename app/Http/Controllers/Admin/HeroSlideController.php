@@ -94,4 +94,25 @@ class HeroSlideController extends Controller
 
         return redirect('/admin/hero-slides')->with('success', 'Hero slide deleted.');
     }
+
+    public function edit(HeroSlide $heroSlide): Response
+    {
+        return Inertia::render('Admin/HeroSlides/Edit', [
+            'heroSlide' => $this->formatHeroSlide($heroSlide),
+        ]);
+    }
+
+    private function formatHeroSlide(HeroSlide $heroSlide): array
+    {
+        return [
+            'id'          => $heroSlide->id,
+            'kicker'      => $heroSlide->kicker,
+            'title'       => $heroSlide->title,
+            'description' => $heroSlide->description,
+            'image'       => $heroSlide->image,
+            'image_url'   => $heroSlide->image ? Storage::disk('public')->url($heroSlide->image) : null,
+            'order'       => $heroSlide->order,
+            'is_active'   => $heroSlide->is_active,
+        ];
+    }
 }

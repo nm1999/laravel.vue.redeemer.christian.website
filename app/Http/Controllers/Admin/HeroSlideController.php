@@ -55,7 +55,8 @@ class HeroSlideController extends Controller
             return response()->json($this->formatHeroSlide($heroSlide), 201);
         }
 
-        return to_route('admin.hero-slides.index');
+        return redirect('/admin/hero-slides');
+        // return to_route('admin.hero-slides.index');
     }
 
     public function edit(HeroSlide $heroSlide): Response
@@ -87,7 +88,8 @@ class HeroSlideController extends Controller
             return response()->json($this->formatHeroSlide($heroSlide->fresh()));
         }
 
-        return to_route('admin.hero-slides.index');
+        return redirect('/admin/hero-slides');
+        // return to_route('admin.hero-slides.index');
     }
 
     public function destroy(Request $request, HeroSlide $heroSlide): RedirectResponse|JsonResponse
@@ -99,7 +101,8 @@ class HeroSlideController extends Controller
             return response()->json([], 204);
         }
 
-        return to_route('admin.hero-slides.index');
+        return redirect('/admin/hero-slides');
+        // return to_route('admin.hero-slides.index');
     }
 
     private function formatHeroSlide(HeroSlide $heroSlide): array

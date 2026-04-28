@@ -54,7 +54,10 @@ class ChurchLeaderController extends Controller
             return response()->json($this->formatChurchLeader($churchLeader), 201);
         }
 
-        return redirect('/admin/church-leaders')->with('success', 'Church leader created successfully.');(ChurchLeader $churchLeader): JsonResponse
+        return redirect('/admin/church-leaders')->with('success', 'Church leader created successfully.');
+    }
+
+    public function show(ChurchLeader $churchLeader): JsonResponse
     {
         return response()->json($this->formatChurchLeader($churchLeader));
     }
@@ -87,7 +90,10 @@ class ChurchLeaderController extends Controller
             return response()->json($this->formatChurchLeader($churchLeader->fresh()));
         }
 
-        return redirect('/admin/church-leaders')->with('success', 'Church leader updated successfully.');: RedirectResponse|JsonResponse
+        return redirect('/admin/church-leaders')->with('success', 'Church leader updated successfully.');
+    }
+
+    public function destroy(Request $request, ChurchLeader $churchLeader): RedirectResponse|JsonResponse
     {
         Storage::disk('public')->delete($churchLeader->image);
         $churchLeader->delete();
@@ -96,7 +102,10 @@ class ChurchLeaderController extends Controller
             return response()->json([], 204);
         }
 
-        return redirect('/admin/church-leaders')->with('success', 'Church leader deleted.');(ChurchLeader $churchLeader): array
+        return redirect('/admin/church-leaders')->with('success', 'Church leader deleted successfully.');
+    }
+
+    private function formatChurchLeader(ChurchLeader $churchLeader): array
     {
         return [
             'id' => $churchLeader->id,

@@ -10,9 +10,21 @@ const navItems = [
 ];
 
 const socialLinks = [
-  { name: 'Facebook', href: '#' },
-  { name: 'YouTube', href: '#' },
-  { name: 'X', href: '#' },
+  {
+    name: 'Facebook',
+    href: '#',
+    classes: 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100',
+  },
+  {
+    name: 'YouTube',
+    href: '#',
+    classes: 'border-red-200 bg-red-50 text-red-700 hover:border-red-300 hover:bg-red-100',
+  },
+  {
+    name: 'X',
+    href: '#',
+    classes: 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100',
+  },
 ];
 </script>
 
@@ -20,14 +32,17 @@ const socialLinks = [
   <div class="min-h-screen bg-slate-50 text-slate-900">
     <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
       <div class="border-b border-slate-200 bg-slate-100 text-slate-700">
-        <div class="mx-auto flex max-w-7xl items-center justify-end px-6 py-2 sm:px-10 lg:px-16">
-          <div class="flex items-center gap-3">
+        <div class="mx-auto flex max-w-7xl items-center justify-end px-6 py-1 sm:px-10 lg:px-16">
+          <div class="flex items-center gap-2">
             <a
               v-for="link in socialLinks"
               :key="link.name"
               :href="link.href"
               :aria-label="link.name"
-              class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+              :class="[
+                'inline-flex h-7 w-7 items-center justify-center rounded-full border transition',
+                link.classes,
+              ]"
             >
               <svg v-if="link.name === 'Facebook'" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.6 1.6-1.6H16.8V4.8c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4V11H8v3h2.6v8h2.9Z" />
@@ -45,8 +60,10 @@ const socialLinks = [
 
       <div class="mx-auto max-w-7xl px-6 py-5 sm:px-10 lg:px-16">
         <div class="flex items-center justify-between gap-4">
-          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900" style="width:45%;height:45%;">
-            <img src="images/logo.jpg" alt="Redeemer Christian Church Logo" style="width:50%;height:50%;" >
+          <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
+            <div class="rounded-xl bg-gradient-to-r from-red-600 to-blue-600 p-1">
+              <img src="images/logo.jpg" alt="Redeemer Christian Church Logo" class="block h-14 w-auto rounded-lg bg-white object-contain px-2 py-1">
+            </div>
           </Link>
 
           <nav class="hidden items-center gap-8 md:flex">

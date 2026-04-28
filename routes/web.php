@@ -126,11 +126,41 @@ Route::get('/donate/failure', [DonationController::class, 'failure'])->name('don
 Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 
 Route::get('/storage-link', function () {
+    $storageBase = storage_path('app/public');
+    $publicBase  = public_path('storage');
+
+    // If public/storage is already a real directory (not a symlink), sync files into it
+    // This is needed on servers that don't follow symlinks
+    if (is_dir($publicBase) && ! is_link($publicBase)) {
+        $copied = 0;
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($storageBase, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+        foreach ($iterator as $item) {
+            $dest = $publicBase . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+            if ($item->isDir()) {
+                if (! is_dir($dest)) {
+                    mkdir($dest, 0755, true);
+                }
+            } else {
+                copy($item->getPathname(), $dest);
+                $copied++;
+            }
+        }
+        return response()->json([
+            'message' => "Copied {$copied} file(s) from storage to public/storage.",
+            'mode'    => 'copy',
+        ]);
+    }
+
+    // Fallback: try to create symlink
     Artisan::call('storage:link');
 
     return response()->json([
         'message' => 'Storage link command executed.',
-        'output' => trim(Artisan::output()),
+        'output'  => trim(Artisan::output()),
+        'mode'    => 'symlink',
     ]);
 })->name('storage.link');
 

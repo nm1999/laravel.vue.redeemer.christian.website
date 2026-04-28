@@ -2,8 +2,19 @@
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useScrollReveal } from '../composables/useScrollReveal';
+import { computed } from 'vue';
 
 useScrollReveal();
+
+const props = defineProps({
+  siteSettings: { type: Object, default: null },
+});
+
+const contactEmail = computed(() => props.siteSettings?.email || 'hello@redeemerchurch.org');
+const contactLocation = computed(() => props.siteSettings?.location || '123 Faith Avenue, Main City');
+const mapsQuery = computed(() => encodeURIComponent(contactLocation.value));
+const mapsEmbedUrl = computed(() => `https://www.google.com/maps?q=${mapsQuery.value}&output=embed`);
+const mapsOpenUrl = computed(() => `https://www.google.com/maps?q=${mapsQuery.value}`);
 </script>
 
 <template>
@@ -22,11 +33,11 @@ useScrollReveal();
           <div class="space-y-5 rounded-3xl bg-slate-50 p-6 text-slate-700 shadow-lg shadow-slate-200/50">
             <div>
               <p class="text-sm uppercase tracking-[0.25em] text-emerald-700">Email</p>
-              <p class="mt-2 text-lg font-semibold text-slate-900">hello@redeemerchurch.org</p>
+              <p class="mt-2 text-lg font-semibold text-slate-900">{{ contactEmail }}</p>
             </div>
             <div>
               <p class="text-sm uppercase tracking-[0.25em] text-emerald-700">Visit us</p>
-              <p class="mt-2 text-lg font-semibold text-slate-900">123 Faith Avenue, Main City</p>
+              <p class="mt-2 text-lg font-semibold text-slate-900">{{ contactLocation }}</p>
             </div>
             <div>
               <p class="text-sm uppercase tracking-[0.25em] text-emerald-700">Office hours</p>
@@ -77,7 +88,7 @@ useScrollReveal();
           <h2 class="mt-3 text-3xl font-semibold text-slate-900">Find us on the map</h2>
         </div>
         <a
-          href="https://www.google.com/maps?q=123+Faith+Avenue,+Main+City"
+          :href="mapsOpenUrl"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
@@ -89,7 +100,7 @@ useScrollReveal();
       <div class="mt-6 overflow-hidden rounded-[24px] border border-slate-200">
         <iframe
           title="Redeemer Church location map"
-          src="https://www.google.com/maps?q=123+Faith+Avenue,+Main+City&output=embed"
+          :src="mapsEmbedUrl"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
           class="h-[420px] w-full border-0"

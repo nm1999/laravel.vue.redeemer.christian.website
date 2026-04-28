@@ -9,6 +9,7 @@ use App\Models\HeroSlide;
 use App\Models\HomeGalleryImage;
 use App\Models\LiveStream;
 use App\Models\Sermon;
+use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +37,7 @@ Route::get('/', function () {
             ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
             ->values(),
         'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
+        'siteSettings' => SiteSettings::query()->first(),
     ]);
 })->name('home');
 
@@ -106,7 +108,11 @@ Route::get('/events/{event:slug}', function (Event $event) {
     ]);
 })->name('events.show');
 
-Route::get('/contact', fn () => Inertia::render('Contact'))->name('contact');
+Route::get('/contact', function () {
+    return Inertia::render('Contact', [
+        'siteSettings' => \App\Models\SiteSettings::query()->first(['email', 'location']),
+    ]);
+})->name('contact');
 
 Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name('prayer-requests.create');
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');

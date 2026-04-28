@@ -55,15 +55,7 @@ class HeroSlideController extends Controller
             return response()->json($this->formatHeroSlide($heroSlide), 201);
         }
 
-        return redirect('/admin/hero-slides');
-        // return to_route('admin.hero-slides.index');
-    }
-
-    public function edit(HeroSlide $heroSlide): Response
-    {
-        return Inertia::render('Admin/HeroSlides/Edit', [
-            'heroSlide' => $this->formatHeroSlide($heroSlide),
-        ]);
+        return redirect('/admin/hero-slides')->with('success', 'Hero slide created successfully.');
     }
 
     public function update(Request $request, HeroSlide $heroSlide): RedirectResponse|JsonResponse
@@ -88,8 +80,7 @@ class HeroSlideController extends Controller
             return response()->json($this->formatHeroSlide($heroSlide->fresh()));
         }
 
-        return redirect('/admin/hero-slides');
-        // return to_route('admin.hero-slides.index');
+        return redirect('/admin/hero-slides')->with('success', 'Hero slide updated successfully.');
     }
 
     public function destroy(Request $request, HeroSlide $heroSlide): RedirectResponse|JsonResponse
@@ -101,21 +92,6 @@ class HeroSlideController extends Controller
             return response()->json([], 204);
         }
 
-        return redirect('/admin/hero-slides');
-        // return to_route('admin.hero-slides.index');
-    }
-
-    private function formatHeroSlide(HeroSlide $heroSlide): array
-    {
-        return [
-            'id' => $heroSlide->id,
-            'kicker' => $heroSlide->kicker,
-            'title' => $heroSlide->title,
-            'description' => $heroSlide->description,
-            'image' => $heroSlide->image,
-            'image_url' => $heroSlide->image_url,
-            'order' => $heroSlide->order,
-            'is_active' => $heroSlide->is_active,
-        ];
+        return redirect('/admin/hero-slides')->with('success', 'Hero slide deleted.');
     }
 }

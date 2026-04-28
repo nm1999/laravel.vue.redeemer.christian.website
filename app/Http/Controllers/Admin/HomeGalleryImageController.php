@@ -53,14 +53,7 @@ class HomeGalleryImageController extends Controller
         }
 
 
-        return redirect('/admin/home-gallery-images');
-    }
-
-    public function edit(HomeGalleryImage $homeGalleryImage): Response
-    {
-        return Inertia::render('Admin/HomeGalleryImages/Edit', [
-            'homeGalleryImage' => $this->formatHomeGalleryImage($homeGalleryImage),
-        ]);
+        return redirect('/admin/home-gallery-images')->with('success', 'Image uploaded successfully.');
     }
 
     public function update(Request $request, HomeGalleryImage $homeGalleryImage): RedirectResponse|JsonResponse
@@ -82,7 +75,7 @@ class HomeGalleryImageController extends Controller
             return response()->json($this->formatHomeGalleryImage($homeGalleryImage->fresh()));
         }
 
-        return redirect('/admin/home-gallery-images');
+        return redirect('/admin/home-gallery-images')->with('success', 'Image updated successfully.');
     }
 
     public function destroy(Request $request, HomeGalleryImage $homeGalleryImage): RedirectResponse|JsonResponse
@@ -94,17 +87,6 @@ class HomeGalleryImageController extends Controller
             return response()->json([], 204);
         }
 
-        return redirect('/admin/home-gallery-images');
-    }
-
-    private function formatHomeGalleryImage(HomeGalleryImage $homeGalleryImage): array
-    {
-        return [
-            'id' => $homeGalleryImage->id,
-            'image' => $homeGalleryImage->image,
-            'image_url' => $homeGalleryImage->image_url,
-            'order' => $homeGalleryImage->order,
-            'is_active' => $homeGalleryImage->is_active,
-        ];
+        return redirect('/admin/home-gallery-images')->with('success', 'Image deleted successfully.');
     }
 }

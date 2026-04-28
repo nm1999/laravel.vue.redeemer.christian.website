@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import AdminLayout from '../Layout.vue';
+import AdminBtn from '../AdminBtn.vue';
 
 const props = defineProps({ event: Object });
 const form = useForm({ ...props.event });
@@ -19,7 +20,7 @@ const submit = () => form.put(`/admin/events/${props.event.id}`);
       <input v-model="form.image_path" class="w-full rounded border p-2" placeholder="Image URL">
       <textarea v-model="form.description" class="w-full rounded border p-2" rows="6" placeholder="Description" />
       <label class="flex items-center gap-2"><input v-model="form.is_featured" type="checkbox"> Featured</label>
-      <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="form.processing">Update</button>
+      <AdminBtn :processing="form.processing">Update</AdminBtn>
     </form>
   </AdminLayout>
 </template>

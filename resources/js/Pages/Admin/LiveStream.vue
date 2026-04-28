@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import AdminLayout from './Layout.vue';
+import AdminBtn from './AdminBtn.vue';
 
 const props = defineProps({ liveStream: Object });
 
@@ -24,7 +25,7 @@ const submit = () => form.put('/admin/live-stream');
       </select>
       <input v-model="form.embed_url" class="w-full rounded border p-2" placeholder="https://www.youtube.com/embed/...">
       <label class="flex items-center gap-2"><input v-model="form.is_active" type="checkbox"> Active</label>
-      <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="form.processing">Save</button>
+      <AdminBtn :processing="form.processing">Save</AdminBtn>
     </form>
   </AdminLayout>
 </template>

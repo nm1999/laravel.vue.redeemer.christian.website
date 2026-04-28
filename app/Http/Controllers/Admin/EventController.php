@@ -41,8 +41,7 @@ class EventController extends Controller
 
         Event::create($data);
 
-        return redirect('/admin/events');
-        // return to_route('admin.events.index');
+        return redirect('/admin/events')->with('success', 'Event created successfully.');
     }
 
     public function edit(Event $event): Response
@@ -72,15 +71,13 @@ class EventController extends Controller
 
         $event->update($data);
 
-        return redirect('/admin/events');
-        // return to_route('admin.events.index');
+        return redirect('/admin/events')->with('success', 'Event updated successfully.');
     }
 
     public function destroy(Event $event): RedirectResponse
     {
         $event->delete();
 
-        return redirect('/admin/events');
-        // return to_route('admin.events.index');
+        return redirect('/admin/events')->with('success', 'Event deleted.');
     }
 }

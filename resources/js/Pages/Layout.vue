@@ -6,7 +6,6 @@ const navItems = [
   { name: 'About Us', href: '/about' },
   { name: 'Blog', href: '/blog' },
   { name: 'Events', href: '/events' },
-  { name: 'Give', href: '/donate' },
   { name: 'Contact', href: '/contact' },
 ];
 
@@ -57,7 +56,7 @@ const socialLinks = [
           </nav>
 
           <Link href="/donate" class="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 sm:px-5 sm:py-2.5">
-            Give Online
+            Donate
           </Link>
         </div>
 

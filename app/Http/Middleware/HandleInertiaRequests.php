@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,6 +41,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'siteSettings' => fn () => SiteSettings::query()
+                ->first(['email', 'location', 'whatsapp_number', 'youtube_live_url']),
         ];
     }
 }

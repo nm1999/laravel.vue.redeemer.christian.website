@@ -1,7 +1,7 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const defaultHomeGalleryImages = [
   '/images/1.jpg',
@@ -56,6 +56,10 @@ const props = defineProps({
     default: () => [],
   },
   activeLiveStream: {
+    type: Object,
+    default: null,
+  },
+  siteSettings: {
     type: Object,
     default: null,
   },
@@ -195,6 +199,52 @@ const setupScrollReveal = () => {
   });
 };
 
+const showVideoModal = ref(false);
+
+const liveVideoSrc = computed(() => {
+  const url = props.activeLiveStream?.embed_url;
+  if (!url) return '';
+  try {
+    const u = new URL(url);
+    u.searchParams.set('autoplay', '1');
+    u.searchParams.set('rel', '0');
+    return u.toString();
+  } catch {
+    return url;
+  }
+});
+
+const introVideoSrc = computed(() => {
+  const url = props.siteSettings?.intro_video_url;
+  if (!url) return '';
+  try {
+    const u = new URL(url);
+    // Extract video ID from the embed path for the loop playlist param
+    const videoId = u.pathname.split('/').filter(Boolean).pop() ?? '';
+    u.searchParams.set('autoplay', '1');
+    u.searchParams.set('mute', '1');   // required for autoplay in all browsers
+    u.searchParams.set('loop', '1');
+    u.searchParams.set('playlist', videoId); // required for YouTube loop to work
+    u.searchParams.set('rel', '0');
+    u.searchParams.set('controls', '0');
+    return u.toString();
+  } catch {
+    return url;
+  }
+});
+
+const openLiveVideo = () => {
+  if (props.activeLiveStream?.embed_url) {
+    showVideoModal.value = true;
+  } else {
+    window.open('https://www.youtube.com', '_blank', 'noopener,noreferrer');
+  }
+};
+
+const closeLiveVideo = () => {
+  showVideoModal.value = false;
+};
+
 onMounted(() => {
   startHeroSlideTimer();
   startSlideTimer();
@@ -213,78 +263,64 @@ onBeforeUnmount(() => {
   <Layout>
     <Head title="Home" />
 
+    <!-- Intro video: plays before the hero slider when set in admin -->
     <section
-      class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
-      @mouseenter="stopHeroSlideTimer"
-      @mouseleave="startHeroSlideTimer"
+      v-if="siteSettings?.intro_video_url"
+      class="mb-6 overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
     >
-      <div class="relative h-[68vh] min-h-[460px] max-h-[760px]">
-        <Transition name="hero-fade" mode="out-in">
-          <img
-            :key="heroSlides[activeHeroSlide].image"
-            :src="heroSlides[activeHeroSlide].image"
-            :alt="heroSlides[activeHeroSlide].title"
-            class="absolute inset-0 h-full w-full object-cover"
-          >
-        </Transition>
-
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/45 to-slate-900/20" />
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
-
-        <div class="relative z-10 flex h-full items-end p-6 sm:p-10 lg:p-14">
-          <div class="max-w-3xl text-white">
-            <p class="inline-flex rounded-full bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-sm">
-              {{ heroSlides[activeHeroSlide].kicker }}
-            </p>
-            <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              {{ heroSlides[activeHeroSlide].title }}
-            </h1>
-            <p class="mt-4 max-w-2xl text-base text-slate-100 sm:text-lg">
-              {{ heroSlides[activeHeroSlide].description }}
-            </p>
-            <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link href="/about" class="inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
-                Learn More
-              </Link>
-              <Link href="/contact" class="inline-flex items-center justify-center rounded-full border border-white/70 bg-white/10 px-7 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20">
-                Plan Your Visit
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          aria-label="Previous hero slide"
-          class="absolute left-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:left-5"
-          @click="previousHeroSlide"
-        >
-          <span aria-hidden="true">&#10094;</span>
-        </button>
-        <button
-          type="button"
-          aria-label="Next hero slide"
-          class="absolute right-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:right-5"
-          @click="nextHeroSlide"
-        >
-          <span aria-hidden="true">&#10095;</span>
-        </button>
-
-        <div class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
-          <button
-            v-for="(slide, index) in heroSlides"
-            :key="slide.image"
-            type="button"
-            :aria-label="`Go to hero slide ${index + 1}`"
-            class="h-2.5 rounded-full transition-all"
-            :class="index === activeHeroSlide ? 'w-9 bg-white' : 'w-2.5 bg-white/60 hover:bg-white/90'"
-            @click="goToHeroSlide(index)"
-          />
-        </div>
+      <div class="relative w-full" style="padding-top: 56.25%;">
+        <iframe
+          class="absolute inset-0 h-full w-full"
+          :src="introVideoSrc"
+          title="Church Intro Video"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        />
       </div>
     </section>
     <br>
 
+    <!-- Mission, Vision & Contact — shown when set in admin Site Settings -->
+    <section
+      v-if="siteSettings?.mission || siteSettings?.vision || siteSettings?.email"
+      class="scroll-reveal reveal-from-bottom mt-0 mb-10 grid gap-6 md:grid-cols-3"
+    >
+      <div
+        v-if="siteSettings?.mission"
+        class="rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
+      >
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Our Mission</p>
+        <p class="mt-4 leading-7 text-slate-700">{{ siteSettings.mission }}</p>
+      </div>
+
+      <div
+        v-if="siteSettings?.vision"
+        class="rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/40"
+      >
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-red-700">Our Vision</p>
+        <p class="mt-4 leading-7 text-slate-700">{{ siteSettings.vision }}</p>
+      </div>
+
+      <div
+        v-if="siteSettings?.email"
+        class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/40 flex flex-col justify-between"
+      >
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Contact Us</p>
+        <p class="mt-4 leading-7 text-slate-700">Have a question or need prayer? We'd love to hear from you.</p>
+        <a
+          :href="`mailto:${siteSettings.email}`"
+          class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          {{ siteSettings.email }}
+        </a>
+      </div>
+    </section>
+
+    <br>
     <section class="scroll-reveal reveal-from-bottom relative overflow-hidden rounded-[32px] border border-slate-200 bg-gradient-to-br from-sky-50 via-white to-red-50 p-8 shadow-2xl shadow-slate-300/40">
       <div class="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_35%)]" />
       <div class="absolute left-0 top-1/3 h-72 w-72 rounded-full bg-red-200/40 blur-3xl"></div>
@@ -299,8 +335,16 @@ onBeforeUnmount(() => {
           </div>
 
           <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <Link href="/about" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Learn about us</Link>
-            <Link href="/contact" class="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50">Contact our team</Link>
+            <button
+                type="button"
+                class="watch-live-btn relative inline-flex items-center justify-center gap-2.5 rounded-full bg-red-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-red-500"
+                @click="openLiveVideo"
+              >
+                <span class="watch-live-ring" aria-hidden="true" />
+                <svg class="h-4 w-4 fill-white" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                Watch Live Service
+              </button>
+              <Link href="/contact" class="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50">Contact our team</Link>
           </div>
 
           <div class="grid gap-4 sm:grid-cols-2">
@@ -388,6 +432,79 @@ onBeforeUnmount(() => {
             class="h-2.5 rounded-full transition-all"
             :class="index === activeSlide ? 'w-8 bg-blue-600' : 'w-2.5 bg-slate-300 hover:bg-slate-400'"
             @click="goToSlide(index)"
+          />
+        </div>
+      </div>
+    </section>
+
+    <br>
+    <section
+      class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
+      @mouseenter="stopHeroSlideTimer"
+      @mouseleave="startHeroSlideTimer"
+    >
+      <div class="relative h-[68vh] min-h-[460px] max-h-[760px]">
+        <Transition name="hero-fade" mode="out-in">
+          <img
+            :key="heroSlides[activeHeroSlide].image"
+            :src="heroSlides[activeHeroSlide].image"
+            :alt="heroSlides[activeHeroSlide].title"
+            class="absolute inset-0 h-full w-full object-cover"
+          >
+        </Transition>
+
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/45 to-slate-900/20" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+
+        <div class="relative z-10 flex h-full items-end p-6 sm:p-10 lg:p-14">
+          <div class="max-w-3xl text-white">
+            <p class="inline-flex rounded-full bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-sm">
+              {{ heroSlides[activeHeroSlide].kicker }}
+            </p>
+            <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              {{ heroSlides[activeHeroSlide].title }}
+            </h1>
+            <p class="mt-4 max-w-2xl text-base text-slate-100 sm:text-lg">
+              {{ heroSlides[activeHeroSlide].description }}
+            </p>
+            <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link href="/about" class="inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+                Learn More
+              </Link>
+              <Link href="/contact" class="inline-flex items-center justify-center rounded-full border border-white/70 bg-white/10 px-7 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20">
+                Plan Your Visit
+              </Link>
+              
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Previous hero slide"
+          class="absolute left-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:left-5"
+          @click="previousHeroSlide"
+        >
+          <span aria-hidden="true">&#10094;</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Next hero slide"
+          class="absolute right-3 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black/25 text-white backdrop-blur-sm transition hover:bg-black/40 sm:right-5"
+          @click="nextHeroSlide"
+        >
+          <span aria-hidden="true">&#10095;</span>
+        </button>
+
+        <div class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
+          <button
+            v-for="(slide, index) in heroSlides"
+            :key="slide.image"
+            type="button"
+            :aria-label="`Go to hero slide ${index + 1}`"
+            class="h-2.5 rounded-full transition-all"
+            :class="index === activeHeroSlide ? 'w-9 bg-white' : 'w-2.5 bg-white/60 hover:bg-white/90'"
+            @click="goToHeroSlide(index)"
           />
         </div>
       </div>
@@ -554,5 +671,38 @@ onBeforeUnmount(() => {
     transform: none;
     transition: none;
   }
+}
+
+/* Watch Live button — pulsing sonar ring */
+.watch-live-btn,
+.watch-live-fab {
+  position: relative;
+  overflow: visible;
+}
+
+.watch-live-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid theme('colors.red.500');
+  animation: live-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes live-ping {
+  0%   { transform: scale(1);   opacity: 0.75; }
+  80%  { transform: scale(1.55); opacity: 0; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+/* Modal transition */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
 }
 </style>

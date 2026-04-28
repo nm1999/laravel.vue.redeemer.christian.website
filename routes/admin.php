@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\HomeGalleryImageController;
 use App\Http\Controllers\Admin\LiveStreamController;
 use App\Http\Controllers\Admin\SermonController;
+use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Models\PrayerRequest;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +23,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::get('/live-stream', [LiveStreamController::class, 'edit'])->name('live-stream.edit');
     Route::put('/live-stream', [LiveStreamController::class, 'update'])->name('live-stream.update');
+
+    Route::get('/site-settings', [SiteSettingsController::class, 'edit'])->name('site-settings.edit');
+    Route::put('/site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
 
     Route::get('/prayer-requests', function () {
         return Inertia::render('Admin/PrayerRequests', [

@@ -10,6 +10,7 @@ const links = [
   { name: 'Home Gallery', href: '/admin/home-gallery-images' },
   { name: 'Live Stream', href: '/admin/live-stream' },
   { name: 'Prayer Requests', href: '/admin/prayer-requests' },
+  { name: 'Site Settings', href: '/admin/site-settings' },
 ];
 </script>
 

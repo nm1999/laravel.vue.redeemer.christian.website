@@ -1,4 +1,5 @@
 <script setup>
+import AdminBtn from '../AdminBtn.vue';
 const props = defineProps({
   form: Object,
   submit: Function,
@@ -33,6 +34,6 @@ const updateImage = (event) => {
       <img v-if="existingImageUrl" :src="existingImageUrl" alt="Current home gallery image" class="mt-3 h-28 w-40 rounded object-cover">
     </div>
 
-    <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="form.processing">{{ submitLabel }}</button>
+    <AdminBtn :processing="form.processing">{{ submitLabel }}</AdminBtn>
   </form>
 </template>

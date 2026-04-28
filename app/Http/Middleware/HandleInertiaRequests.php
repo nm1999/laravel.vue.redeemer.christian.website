@@ -41,6 +41,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error'   => fn () => $request->session()->get('error'),
+            ],
             'siteSettings' => fn () => SiteSettings::query()
                 ->first(['email', 'location', 'whatsapp_number', 'youtube_live_url']),
         ];

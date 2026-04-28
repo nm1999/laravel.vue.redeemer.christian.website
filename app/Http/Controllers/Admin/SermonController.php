@@ -41,7 +41,7 @@ class SermonController extends Controller
 
         Sermon::create($data);
 
-        return redirect('/admin/sermons');
+        return redirect('/admin/sermons')->with('success', 'Sermon created successfully.');
     }
 
     public function edit(Sermon $sermon): Response
@@ -71,13 +71,13 @@ class SermonController extends Controller
 
         $sermon->update($data);
 
-        return redirect('/admin/sermons');
+        return redirect('/admin/sermons')->with('success', 'Sermon updated successfully.');
     }
 
     public function destroy(Sermon $sermon): RedirectResponse
     {
         $sermon->delete();
 
-        return redirect('/admin/sermons');
+        return redirect('/admin/sermons')->with('success', 'Sermon deleted.');
     }
 }

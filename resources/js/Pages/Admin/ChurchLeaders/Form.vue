@@ -1,4 +1,5 @@
 <script setup>
+import AdminBtn from '../AdminBtn.vue';
 const props = defineProps({
   form: Object,
   submit: Function,
@@ -42,6 +43,6 @@ const updateImage = (event) => {
       <p v-if="form.errors.bio" class="mt-1 text-sm text-red-600">{{ form.errors.bio }}</p>
     </div>
 
-    <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="form.processing">{{ submitLabel }}</button>
+    <AdminBtn :processing="form.processing">{{ submitLabel }}</AdminBtn>
   </form>
 </template>

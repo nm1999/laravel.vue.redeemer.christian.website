@@ -35,6 +35,6 @@ class LiveStreamController extends Controller
             ]
         );
 
-        return back();
+        return back()->with('success', 'Live stream settings saved.');
     }
 }

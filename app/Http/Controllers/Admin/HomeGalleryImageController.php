@@ -53,10 +53,7 @@ class HomeGalleryImageController extends Controller
         }
 
 
-        return redirect('/admin/home-gallery-images');
-    }
-
-    public function edit(HomeGalleryImage $homeGalleryImage): Response
+        return redirect('/admin/home-gallery-images')->with('success', 'Image uploaded successfully.');
     {
         return Inertia::render('Admin/HomeGalleryImages/Edit', [
             'homeGalleryImage' => $this->formatHomeGalleryImage($homeGalleryImage),
@@ -82,10 +79,7 @@ class HomeGalleryImageController extends Controller
             return response()->json($this->formatHomeGalleryImage($homeGalleryImage->fresh()));
         }
 
-        return redirect('/admin/home-gallery-images');
-    }
-
-    public function destroy(Request $request, HomeGalleryImage $homeGalleryImage): RedirectResponse|JsonResponse
+        return redirect('/admin/home-gallery-images')->with('success', 'Image updated successfully.');: RedirectResponse|JsonResponse
     {
         Storage::disk('public')->delete($homeGalleryImage->image);
         $homeGalleryImage->delete();
@@ -94,10 +88,7 @@ class HomeGalleryImageController extends Controller
             return response()->json([], 204);
         }
 
-        return redirect('/admin/home-gallery-images');
-    }
-
-    private function formatHomeGalleryImage(HomeGalleryImage $homeGalleryImage): array
+        return redirect('/admin/home-gallery-images')->with('success', 'Image deleted.');(HomeGalleryImage $homeGalleryImage): array
     {
         return [
             'id' => $homeGalleryImage->id,

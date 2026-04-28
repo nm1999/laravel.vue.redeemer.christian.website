@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import AdminLayout from './Layout.vue';
+import AdminBtn from './AdminBtn.vue';
 
 const props = defineProps({ settings: Object });
 
@@ -21,10 +22,6 @@ const submit = () => form.put('/admin/site-settings');
   <AdminLayout>
     <Head title="Site Settings" />
     <h2 class="mb-6 text-2xl font-semibold">Site Settings</h2>
-
-    <div v-if="$page.props.flash?.success" class="mb-4 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
-      {{ $page.props.flash.success }}
-    </div>
 
     <form class="space-y-6" @submit.prevent="submit">
       <div>
@@ -113,13 +110,7 @@ const submit = () => form.put('/admin/site-settings');
         <p v-if="form.errors.intro_video_url" class="mt-1 text-sm text-red-600">{{ form.errors.intro_video_url }}</p>
       </div>
 
-      <button
-        type="submit"
-        class="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
-        :disabled="form.processing"
-      >
-        Save Settings
-      </button>
+      <AdminBtn :processing="form.processing" :pill="true">Save Settings</AdminBtn>
     </form>
   </AdminLayout>
 </template>

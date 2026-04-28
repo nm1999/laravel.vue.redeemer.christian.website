@@ -1,6 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 import AdminLayout from '../Layout.vue';
+import AdminBtn from '../AdminBtn.vue';
 
 const form = useForm({ title: '', excerpt: '', content: '', image_path: '', speaker: '', preached_at: '', is_published: true });
 const submit = () => form.post('/admin/sermons');
@@ -18,7 +19,7 @@ const submit = () => form.post('/admin/sermons');
       <textarea v-model="form.excerpt" class="w-full rounded border p-2" placeholder="Excerpt" />
       <textarea v-model="form.content" class="w-full rounded border p-2" rows="6" placeholder="Content" />
       <label class="flex items-center gap-2"><input v-model="form.is_published" type="checkbox"> Published</label>
-      <button class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="form.processing">Save</button>
+      <AdminBtn :processing="form.processing">Save</AdminBtn>
     </form>
   </AdminLayout>
 </template>

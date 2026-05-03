@@ -12,6 +12,7 @@ class PrayerRequest extends Model
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'request_text',
         'is_private',
         'status',

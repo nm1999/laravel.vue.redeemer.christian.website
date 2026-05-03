@@ -1,5 +1,6 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AdminLayout from './Layout.vue';
 import AdminBtn from './AdminBtn.vue';
 
@@ -13,9 +14,42 @@ const form = useForm({
   whatsapp_number: props.settings?.whatsapp_number ?? '',
   youtube_live_url: props.settings?.youtube_live_url ?? '',
   intro_video_url: props.settings?.intro_video_url ?? '',
+  facebook_url: props.settings?.facebook_url ?? '',
+  youtube_url: props.settings?.youtube_url ?? '',
+  twitter_url: props.settings?.twitter_url ?? '',
+  site_name: props.settings?.site_name ?? '',
+  site_favicon: null,
 });
 
-const submit = () => form.put('/admin/site-settings');
+const existingFaviconUrl = computed(() => {
+  const value = props.settings?.site_favicon_url;
+
+  if (! value) {
+    return null;
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('/')) {
+    return value;
+  }
+
+  return `/storage/${value}`;
+});
+
+const updateFavicon = (event) => {
+  form.site_favicon = event.target.files[0] || null;
+};
+
+const submit = () => {
+  form
+    .transform((data) => ({
+      ...data,
+      _method: 'put',
+    }))
+    .post('/admin/site-settings', {
+      forceFormData: true,
+      onSuccess: () => form.reset('site_favicon'),
+    });
+};
 </script>
 
 <template>
@@ -24,6 +58,36 @@ const submit = () => form.put('/admin/site-settings');
     <h2 class="mb-6 text-2xl font-semibold">Site Settings</h2>
 
     <form class="space-y-6" @submit.prevent="submit">
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Site Name (Browser Title)</label>
+        <input
+          v-model="form.site_name"
+          type="text"
+          class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-blue-400 focus:outline-none"
+          placeholder="Redeemer Christian Church"
+        >
+        <p class="mt-1 text-xs text-slate-500">Used in the browser tab title across the website.</p>
+        <p v-if="form.errors.site_name" class="mt-1 text-sm text-red-600">{{ form.errors.site_name }}</p>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Title Logo / Favicon Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-blue-400 focus:outline-none"
+          @change="updateFavicon"
+        >
+        <p class="mt-1 text-xs text-slate-500">Upload an image used as the browser tab icon and link preview image.</p>
+        <p v-if="form.errors.site_favicon" class="mt-1 text-sm text-red-600">{{ form.errors.site_favicon }}</p>
+        <img
+          v-if="existingFaviconUrl"
+          :src="existingFaviconUrl"
+          alt="Current favicon"
+          class="mt-3 h-12 w-12 rounded object-cover border border-slate-200"
+        >
+      </div>
+
       <div>
         <label class="mb-1 block text-sm font-medium text-slate-700">Mission Statement</label>
         <textarea
@@ -94,6 +158,42 @@ const submit = () => form.put('/admin/site-settings');
         >
         <p class="mt-1 text-xs text-slate-500">Used for the floating YouTube Live button. Paste your channel's live URL (e.g. <code>https://www.youtube.com/@redeemerchurch/live</code>).</p>
         <p v-if="form.errors.youtube_live_url" class="mt-1 text-sm text-red-600">{{ form.errors.youtube_live_url }}</p>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Facebook URL (Header)</label>
+        <input
+          v-model="form.facebook_url"
+          type="url"
+          class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-blue-400 focus:outline-none"
+          placeholder="https://www.facebook.com/yourpage"
+        >
+        <p class="mt-1 text-xs text-slate-500">Used for the Facebook icon link in the top header.</p>
+        <p v-if="form.errors.facebook_url" class="mt-1 text-sm text-red-600">{{ form.errors.facebook_url }}</p>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">YouTube URL (Header)</label>
+        <input
+          v-model="form.youtube_url"
+          type="url"
+          class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-blue-400 focus:outline-none"
+          placeholder="https://www.youtube.com/@YourChannel"
+        >
+        <p class="mt-1 text-xs text-slate-500">Used for the YouTube icon link in the top header.</p>
+        <p v-if="form.errors.youtube_url" class="mt-1 text-sm text-red-600">{{ form.errors.youtube_url }}</p>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700">Twitter/X URL (Header)</label>
+        <input
+          v-model="form.twitter_url"
+          type="url"
+          class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-blue-400 focus:outline-none"
+          placeholder="https://x.com/yourhandle"
+        >
+        <p class="mt-1 text-xs text-slate-500">Used for the X icon link in the top header.</p>
+        <p v-if="form.errors.twitter_url" class="mt-1 text-sm text-red-600">{{ form.errors.twitter_url }}</p>
       </div>
 
       <div>

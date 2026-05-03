@@ -2,16 +2,27 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @php
-            $siteName = config('app.name', 'Redeemer Christian Church');
+            $settings = \App\Models\SiteSettings::query()->first(['site_name', 'site_favicon_url']);
+            $siteName = $settings?->site_name ?: config('app.name', 'Redeemer Christian Church');
             $siteTitle = $siteName;
             $siteDescription = 'A warm church community for worship, growth, and service. Join Redeemer Christian Church this Sunday.';
-            $siteImage = url('/images/logo.jpg');
+            $siteImage = $settings?->site_favicon_url ?: url('/images/logo.jpg');
+
+            if ($settings?->site_favicon_url
+                && ! str_starts_with($settings->site_favicon_url, 'http://')
+                && ! str_starts_with($settings->site_favicon_url, 'https://')
+                && ! str_starts_with($settings->site_favicon_url, '/')) {
+                $siteImage = \Illuminate\Support\Facades\Storage::disk('public')->url($settings->site_favicon_url);
+            }
+
             $siteUrl = url()->current();
         @endphp
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="app-name" content="{{ $siteName }}">
         <meta name="description" content="{{ $siteDescription }}">
+        <link rel="icon" type="image/png" href="{{ $siteImage }}">
 
         <link rel="canonical" href="{{ $siteUrl }}">
 
@@ -27,7 +38,7 @@
         <meta name="twitter:description" content="{{ $siteDescription }}">
         <meta name="twitter:image" content="{{ $siteImage }}">
 
-        <title inertia>{{ config('app.name', 'Redeemer Christain Church') }}</title>
+        <title inertia>{{ $siteName }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

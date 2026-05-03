@@ -11,6 +11,7 @@ use App\Models\LiveStream;
 use App\Models\Sermon;
 use App\Models\SiteSettings;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -62,6 +63,18 @@ Route::get('/api/church-leaders', function () {
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
 Route::get('/blog', function () {
+    $resolveImagePath = static function (?string $path): string {
+        if (! $path) {
+            return '/images/1.jpg';
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return Storage::disk('public')->url($path);
+    };
+
     return Inertia::render('Blogs', [
         'posts' => Sermon::query()
             ->where('is_published', true)
@@ -73,7 +86,7 @@ Route::get('/blog', function () {
                 'excerpt' => $sermon->excerpt,
                 'date' => optional($sermon->preached_at)->format('F j, Y'),
                 'author' => $sermon->speaker,
-                'image' => $sermon->image_path ?: '/images/1.jpg',
+                'image' => $resolveImagePath($sermon->image_path),
                 'body1' => $sermon->content,
                 'body2' => null,
             ]),
@@ -81,6 +94,18 @@ Route::get('/blog', function () {
 })->name('blog.index');
 
 Route::get('/blog/{sermon:slug}', function (Sermon $sermon) {
+    $resolveImagePath = static function (?string $path): string {
+        if (! $path) {
+            return '/images/1.jpg';
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return Storage::disk('public')->url($path);
+    };
+
     return Inertia::render('BlogPost', [
         'post' => [
             'slug' => $sermon->slug,
@@ -88,7 +113,7 @@ Route::get('/blog/{sermon:slug}', function (Sermon $sermon) {
             'excerpt' => $sermon->excerpt,
             'date' => optional($sermon->preached_at)->format('F j, Y'),
             'author' => $sermon->speaker,
-            'image' => $sermon->image_path ?: '/images/1.jpg',
+            'image' => $resolveImagePath($sermon->image_path),
             'body1' => $sermon->content,
             'body2' => null,
         ],

@@ -5,7 +5,7 @@
             $siteName = config('app.name', 'Redeemer Christian Church');
             $siteTitle = $siteName;
             $siteDescription = 'A warm church community for worship, growth, and service. Join Redeemer Christian Church this Sunday.';
-            $siteImage = url('/images/1.jpg');
+            $siteImage = url('/images/logo.jpg');
             $siteUrl = url()->current();
         @endphp
 

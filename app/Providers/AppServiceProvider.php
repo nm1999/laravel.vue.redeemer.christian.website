@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Artisan;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,30 +24,34 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Vite::prefetch(concurrency: 3);
-        
-        // Automatically create storage symlink if it doesn't exist
-        $this->createStorageSymlink();
+        $this->ensureStorageLink();
     }
 
     /**
-     * Create storage symlink if it does not exist.
-     *
-     * @return void
+     * Ensure the public/storage symlink exists so uploaded files are accessible.
+     * This is called on every request but performs work only when the symlink is missing.
      */
-    protected function createStorageSymlink(): void
+    private function ensureStorageLink(): void
     {
-        $publicStoragePath = public_path('storage');
-        $storageAppPublicPath = storage_path('app/public');
+        $publicStorage = public_path('storage');
 
-        // Check if symlink doesn't exist
-        if (!file_exists($publicStoragePath) && !is_link($publicStoragePath)) {
-            try {
-                // Try to create symlink
-                Artisan::call('storage:link');
-            } catch (\Exception $e) {
-                // Silently fail - symlink creation might not be supported on all servers
-                // The /storage-link route can be used as fallback
-            }
+        // Symlink already exists – nothing to do.
+        if (is_link($publicStorage)) {
+            return;
+        }
+
+        // A real directory exists (e.g. FILESYSTEM_LINK_TYPE=copy mode or pre-created
+        // by the server). Files uploaded in copy mode go directly into this directory
+        // and are already accessible, so we leave it alone.
+        if (is_dir($publicStorage)) {
+            return;
+        }
+
+        try {
+            Artisan::call('storage:link');
+        } catch (\Throwable) {
+            // Silently ignore on restricted environments; the symlink may be
+            // created via the post-install-cmd composer script instead.
         }
     }
 }

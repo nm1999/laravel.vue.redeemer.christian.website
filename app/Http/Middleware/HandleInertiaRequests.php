@@ -46,7 +46,17 @@ class HandleInertiaRequests extends Middleware
                 'error'   => fn () => $request->session()->get('error'),
             ],
             'siteSettings' => fn () => SiteSettings::query()
-                ->first(['email', 'location', 'whatsapp_number', 'youtube_live_url']),
+                ->first([
+                    'email',
+                    'location',
+                    'whatsapp_number',
+                    'youtube_live_url',
+                    'facebook_url',
+                    'youtube_url',
+                    'twitter_url',
+                    'site_name',
+                    'site_favicon_url',
+                ]),
         ];
     }
 }

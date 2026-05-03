@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -30,7 +31,7 @@ class EventController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
-            'image_path' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:4096'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'is_featured' => ['boolean'],
@@ -38,6 +39,10 @@ class EventController extends Controller
 
         $data['slug'] = Str::slug($data['title']).'-'.Str::lower(Str::random(6));
         $data['is_featured'] = $request->boolean('is_featured', false);
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('events', 'public');
+        }
 
         Event::create($data);
 
@@ -57,7 +62,7 @@ class EventController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
-            'image_path' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:4096'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'is_featured' => ['boolean'],
@@ -69,6 +74,14 @@ class EventController extends Controller
 
         $data['is_featured'] = $request->boolean('is_featured', false);
 
+        if ($request->hasFile('image')) {
+            if ($event->image_path && ! self::isExternalUrl($event->image_path)) {
+                Storage::disk('public')->delete($event->image_path);
+            }
+
+            $data['image_path'] = $request->file('image')->store('events', 'public');
+        }
+
         $event->update($data);
 
         return redirect('/admin/events')->with('success', 'Event updated successfully.');
@@ -76,8 +89,17 @@ class EventController extends Controller
 
     public function destroy(Event $event): RedirectResponse
     {
+        if ($event->image_path && ! self::isExternalUrl($event->image_path)) {
+            Storage::disk('public')->delete($event->image_path);
+        }
+
         $event->delete();
 
         return redirect('/admin/events')->with('success', 'Event deleted.');
+    }
+
+    private static function isExternalUrl(string $value): bool
+    {
+        return str_starts_with($value, 'http://') || str_starts_with($value, 'https://') || str_starts_with($value, '/');
     }
 }

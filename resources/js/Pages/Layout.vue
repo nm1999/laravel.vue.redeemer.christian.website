@@ -19,23 +19,23 @@ const navItems = [
   { name: 'Contact', href: '/contact' },
 ];
 
-const socialLinks = [
+const socialLinks = computed(() => [
   {
     name: 'Facebook',
-    href: '#',
+    href: page.props.siteSettings?.facebook_url || 'https://www.facebook.com',
     classes: 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100',
   },
   {
     name: 'YouTube',
-    href: '#',
+    href: page.props.siteSettings?.youtube_url || 'https://www.youtube.com',
     classes: 'border-red-200 bg-red-50 text-red-700 hover:border-red-300 hover:bg-red-100',
   },
   {
     name: 'X',
-    href: '#',
+    href: page.props.siteSettings?.twitter_url || 'https://x.com',
     classes: 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100',
   },
-];
+]);
 </script>
 
 <template>
@@ -48,6 +48,8 @@ const socialLinks = [
               v-for="link in socialLinks"
               :key="link.name"
               :href="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
               :aria-label="link.name"
               :class="[
                 'inline-flex h-7 w-7 items-center justify-center rounded-full border transition',

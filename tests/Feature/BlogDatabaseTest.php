@@ -24,7 +24,7 @@ class BlogDatabaseTest extends TestCase
             'is_published' => true,
         ]);
 
-        $response = $this->get('/blog');
+        $response = $this->get('/activities');
 
         $response->assertStatus(200);
         $response->assertSee('Grace in Action');

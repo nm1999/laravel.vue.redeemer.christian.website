@@ -14,7 +14,7 @@ const youtubeLiveHref = computed(() => {
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'About Us', href: '/about' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Activities', href: '/activities' },
   { name: 'Events', href: '/events' },
   { name: 'Contact', href: '/contact' },
 ];

@@ -39,7 +39,7 @@ class HomeGalleryImageController extends Controller
     public function store(Request $request): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
-            'image' => ['required', 'image', 'max:4096'],
+            'image' => ['required', 'image'],
             'order' => ['required', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
         ]);
@@ -59,7 +59,7 @@ class HomeGalleryImageController extends Controller
     public function update(Request $request, HomeGalleryImage $homeGalleryImage): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
-            'image' => ['nullable', 'image', 'max:4096'],
+            'image' => ['nullable', 'image'],
             'order' => ['required', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
         ]);

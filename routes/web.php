@@ -62,7 +62,7 @@ Route::get('/api/church-leaders', function () {
 
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
-Route::get('/blog', function () {
+Route::get('/activities', function () {
     $resolveImagePath = static function (?string $path): string {
         if (! $path) {
             return '/images/1.jpg';

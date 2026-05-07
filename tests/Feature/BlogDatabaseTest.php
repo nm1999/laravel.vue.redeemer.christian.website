@@ -10,7 +10,7 @@ class BlogDatabaseTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_blog_page_reads_sermons_from_database(): void
+    public function test_activities_page_reads_sermons_from_database(): void
     {
         $this->withoutVite();
 

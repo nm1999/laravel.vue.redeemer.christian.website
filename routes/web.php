@@ -147,6 +147,9 @@ Route::post('/donate', [DonationController::class, 'store'])->name('donate.store
 Route::post('/donate/payment-intent', [DonationController::class, 'paymentIntent'])->name('donate.payment-intent');
 Route::get('/donate/success', [DonationController::class, 'success'])->name('donate.success');
 Route::get('/donate/failure', [DonationController::class, 'failure'])->name('donate.failure');
+Route::get('/api/site-details', function(){
+    return SiteSettings::first();
+});
 
 Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 

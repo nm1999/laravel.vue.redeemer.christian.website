@@ -6,6 +6,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useScrollReveal } from '../composables/useScrollReveal';
 
 const leadershipTeam = ref([]);
+const siteData =  ref({});
 let leaderObserver = null;
 
 useScrollReveal();
@@ -42,7 +43,19 @@ const observeLeaderCards = () => {
   });
 };
 
+const fetchSiteDetails = async ()=> {
+  try {
+    const response = await axios.get('/api/site-details');
+    siteData.value = response.data;   
+  } catch {
+    siteData.value = {};
+  }
+
+}
+
 onMounted(async () => {
+  fetchSiteDetails();
+
   try {
     const response = await axios.get('/api/church-leaders');
     leadershipTeam.value = response.data.data;
@@ -107,7 +120,7 @@ onBeforeUnmount(() => {
         <h2 class="text-3xl font-semibold text-slate-900">How we worship</h2>
         <p class="mt-4 text-slate-700 leading-8">Our services blend inspiring music, scripture, and real-life teaching to help people experience God in everyday life.</p>
         <ul class="mt-8 space-y-4 text-slate-700">
-          <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Sunday Worship at 10AM</li>
+          <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Sunday Worship at 8AM</li>
           <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Midweek prayer and study evenings</li>
           <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Kids and youth programs</li>
         </ul>
@@ -118,7 +131,7 @@ onBeforeUnmount(() => {
         <div class="mt-8 space-y-6 text-slate-700">
           <div>
             <p class="text-xl font-semibold text-slate-900">Sunday Morning</p>
-            <p class="mt-2 leading-7">10:00 AM worship service with live music, children’s ministry, and a message for the whole family.</p>
+            <p class="mt-2 leading-7">08:00 AM worship service with live music, children’s ministry, and a message for the whole family.</p>
           </div>
           <div>
             <p class="text-xl font-semibold text-slate-900">Wednesday Night</p>
@@ -135,14 +148,12 @@ onBeforeUnmount(() => {
     <section class="scroll-reveal reveal-from-bottom mt-12 grid gap-8 lg:grid-cols-2" style="--reveal-delay: 60ms">
       <article class="scroll-reveal reveal-from-left rounded-[32px] border border-blue-100 bg-blue-50 p-8 shadow-2xl shadow-blue-100/50" style="--reveal-delay: 70ms">
         <p class="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Vision</p>
-        <h2 class="mt-4 text-3xl font-semibold text-slate-900">To see lives transformed by Jesus in every home and generation.</h2>
-        <p class="mt-4 leading-8 text-slate-700">Our vision is a church family where people encounter Christ, discover purpose, and carry hope into schools, workplaces, and communities.</p>
+        <h2 class="mt-4 text-3xl font-semibold text-slate-900">{{ siteData.mission }}</h2>
       </article>
 
       <article class="scroll-reveal reveal-from-right rounded-[32px] border border-red-100 bg-red-50 p-8 shadow-2xl shadow-red-100/50" style="--reveal-delay: 130ms">
         <p class="text-sm font-semibold uppercase tracking-[0.25em] text-red-700">Mission</p>
-        <h2 class="mt-4 text-3xl font-semibold text-slate-900">Celebrate Christ, build disciples, and serve the city with love.</h2>
-        <p class="mt-4 leading-8 text-slate-700">We gather for worship, grow through practical teaching and small groups, and go out in compassion through outreach, prayer, and care.</p>
+        <h2 class="mt-4 text-3xl font-semibold text-slate-900">{{ siteData.mission }}</h2>
       </article>
     </section>
 

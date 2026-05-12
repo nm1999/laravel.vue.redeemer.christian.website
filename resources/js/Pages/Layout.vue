@@ -145,7 +145,7 @@ const socialLinks = computed(() => [
         <div class="grid gap-4 text-sm sm:grid-cols-3">
           <div>
             <p class="font-semibold text-slate-900">Worship</p>
-            <p>Sunday 10AM</p>
+            <p>Sunday 8AM</p>
           </div>
           <div>
             <p class="font-semibold text-slate-900">Location</p>

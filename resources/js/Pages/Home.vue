@@ -350,7 +350,7 @@ onBeforeUnmount(() => {
           <div class="grid gap-4 sm:grid-cols-2">
             <div class="rounded-[28px] bg-white/90 p-6 shadow-lg shadow-slate-200/60">
               <p class="text-sm uppercase tracking-[0.2em] text-blue-700">Next worship experience</p>
-              <p class="mt-3 text-xl font-semibold text-slate-900">Sunday worship at 10AM</p>
+              <p class="mt-3 text-xl font-semibold text-slate-900">Sunday worship at 8AM</p>
               <p class="mt-2 text-slate-600">A warm service with music, teaching, and kids ministry for every age.</p>
             </div>
             <div class="rounded-[28px] bg-white/90 p-6 shadow-lg shadow-slate-200/60">

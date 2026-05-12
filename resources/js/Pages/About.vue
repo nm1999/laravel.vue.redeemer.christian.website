@@ -120,7 +120,7 @@ onBeforeUnmount(() => {
         <h2 class="text-3xl font-semibold text-slate-900">How we worship</h2>
         <p class="mt-4 text-slate-700 leading-8">Our services blend inspiring music, scripture, and real-life teaching to help people experience God in everyday life.</p>
         <ul class="mt-8 space-y-4 text-slate-700">
-          <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Sunday Worship at 10AM</li>
+          <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Sunday Worship at 8AM</li>
           <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Midweek prayer and study evenings</li>
           <li class="flex gap-3"><span class="mt-1 inline-flex h-3 w-3 rounded-full bg-blue-600"></span> Kids and youth programs</li>
         </ul>
@@ -131,7 +131,7 @@ onBeforeUnmount(() => {
         <div class="mt-8 space-y-6 text-slate-700">
           <div>
             <p class="text-xl font-semibold text-slate-900">Sunday Morning</p>
-            <p class="mt-2 leading-7">10:00 AM worship service with live music, children’s ministry, and a message for the whole family.</p>
+            <p class="mt-2 leading-7">08:00 AM worship service with live music, children’s ministry, and a message for the whole family.</p>
           </div>
           <div>
             <p class="text-xl font-semibold text-slate-900">Wednesday Night</p>

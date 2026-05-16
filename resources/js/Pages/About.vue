@@ -6,7 +6,6 @@ import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useScrollReveal } from '../composables/useScrollReveal';
 
 const leadershipTeam = ref([]);
-const siteData =  ref({});
 let leaderObserver = null;
 
 useScrollReveal();
@@ -43,15 +42,6 @@ const observeLeaderCards = () => {
   });
 };
 
-const fetchSiteDetails = async ()=> {
-  try {
-    const response = await axios.get('/api/site-details');
-    siteData.value = response.data;   
-  } catch {
-    siteData.value = {};
-  }
-
-}
 
 onMounted(async () => {
   fetchSiteDetails();
@@ -80,13 +70,13 @@ onBeforeUnmount(() => {
     <section class="scroll-reveal reveal-from-bottom relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50">
       <div class="absolute right-0 top-0 h-40 w-40 rounded-full bg-red-100 blur-3xl"></div>
       <div class="space-y-8">
-        <div class="space-y-3">
+        <!-- <div class="space-y-3">
           <p class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Our story</p>
           <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">A welcoming church built on hope, service, and joy.</h1>
           <p class="max-w-2xl text-lg leading-8 text-slate-700">Redeemer Christian Church guides families, students, and neighbors through inspiring worship, practical teaching, and community care.</p>
-        </div>
+        </div> -->
 
-        <div class="grid gap-6 lg:grid-cols-2">
+        <!-- <div class="grid gap-6 lg:grid-cols-2">
           <article class="scroll-reveal reveal-from-left rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-lg shadow-slate-200/70" style="--reveal-delay: 80ms">
             <h2 class="text-2xl font-semibold text-slate-900">Faith & Values</h2>
             <p class="mt-4 text-slate-700 leading-7">We live out grace, generosity, and belonging through worship, Bible study, and outreach. Our mission is to build hope for every season of life.</p>
@@ -96,7 +86,7 @@ onBeforeUnmount(() => {
             <h2 class="text-2xl font-semibold text-slate-900">Community Focus</h2>
             <p class="mt-4 text-slate-700 leading-7">From weekly prayer groups to family events, we create space where every person can connect, grow, and serve together.</p>
           </article>
-        </div>
+        </div> -->
 
         <div class="grid gap-6 sm:grid-cols-3">
           <div class="scroll-reveal reveal-from-bottom rounded-3xl bg-blue-50 p-6 text-center shadow-xl shadow-blue-100/70" style="--reveal-delay: 40ms">
@@ -133,29 +123,19 @@ onBeforeUnmount(() => {
             <p class="text-xl font-semibold text-slate-900">Sunday Morning</p>
             <p class="mt-2 leading-7">08:00 AM worship service with live music, children’s ministry, and a message for the whole family.</p>
           </div>
-          <div>
+          <!-- <div>
             <p class="text-xl font-semibold text-slate-900">Wednesday Night</p>
             <p class="mt-2 leading-7">6:30 PM prayer, Bible study, and small group connection for every age.</p>
           </div>
           <div>
             <p class="text-xl font-semibold text-slate-900">Community Care</p>
             <p class="mt-2 leading-7">Service projects, neighborhood support, and a place to serve others in love.</p>
-          </div>
+          </div> -->
         </div>
       </div>
     </section>
 
-    <section class="scroll-reveal reveal-from-bottom mt-12 grid gap-8 lg:grid-cols-2" style="--reveal-delay: 60ms">
-      <article class="scroll-reveal reveal-from-left rounded-[32px] border border-blue-100 bg-blue-50 p-8 shadow-2xl shadow-blue-100/50" style="--reveal-delay: 70ms">
-        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Vision</p>
-        <h2 class="mt-4 text-3xl font-semibold text-slate-900">{{ siteData.mission }}</h2>
-      </article>
-
-      <article class="scroll-reveal reveal-from-right rounded-[32px] border border-red-100 bg-red-50 p-8 shadow-2xl shadow-red-100/50" style="--reveal-delay: 130ms">
-        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-red-700">Mission</p>
-        <h2 class="mt-4 text-3xl font-semibold text-slate-900">{{ siteData.mission }}</h2>
-      </article>
-    </section>
+   
 
     <section class="scroll-reveal reveal-from-bottom mt-12 rounded-[32px] border border-slate-200 bg-white p-8 shadow-2xl shadow-slate-200/50" style="--reveal-delay: 70ms">
       <div class="space-y-3">

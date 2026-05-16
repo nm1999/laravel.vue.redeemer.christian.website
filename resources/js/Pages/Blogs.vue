@@ -18,7 +18,7 @@ useScrollReveal();
       <div class="space-y-6">
         <div class="space-y-3">
           <p class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Church stories</p>
-          <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Inspiring messages, stories, and community updates.</h1>
+          <h1 class="text-4xl font-bold text-slate-900 sm:text-5l">Inspiring messages, stories, and community updates.</h1>
           <p class="max-w-2xl text-lg leading-8 text-slate-600">Read the latest reflections, encouragement, and practical faith resources from Redeemer Christian Church.</p>
         </div>
 

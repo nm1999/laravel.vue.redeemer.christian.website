@@ -17,6 +17,7 @@ const navItems = [
   { name: 'ACTIVITIES', href: '/activities' },
   { name: 'EVENTS', href: '/events' },
   { name: 'CONTACT', href: '/contact' },
+  { name: 'GALLERY', href: '/gallery' },
 ];
 
 const socialLinks = computed(() => [

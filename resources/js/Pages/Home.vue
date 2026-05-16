@@ -9,10 +9,6 @@ const defaultHomeGalleryImages = [
   '/images/3.jpg',
   '/images/4.jpg',
   '/images/1.jpg',
-  '/images/3.jpg',
-  '/images/4.jpg',
-  '/images/2.jpg',
-  '/images/1.jpg',
 ];
 
 const defaultHeroSlides = [
@@ -556,7 +552,7 @@ onBeforeUnmount(() => {
           :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"
           :style="{ '--reveal-delay': `${index * 90}ms` }"
         >
-          <img
+          <img            
             :src="image"
             :alt="`Redeemer church photo ${index + 1}`"
             class="h-56 w-full object-cover transition duration-500 group-hover:scale-105"

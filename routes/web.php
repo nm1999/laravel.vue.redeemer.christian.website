@@ -34,6 +34,7 @@ Route::get('/', function () {
             ->where('is_active', true)
             ->orderBy('order')
             ->orderBy('id')
+            ->limit(6)
             ->get()
             ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
             ->values(),
@@ -61,6 +62,15 @@ Route::get('/api/church-leaders', function () {
 })->name('church-leaders.index');
 
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
+Route::get('/gallery', fn () => Inertia::render('Gallery',[
+    'homeGalleryImages' => HomeGalleryImage::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
+            ->values(),
+]))->name('gallery');
 
 Route::get('/activities', function () {
     $resolveImagePath = static function (?string $path): string {

@@ -12,11 +12,11 @@ const youtubeLiveHref = computed(() => {
 });
 
 const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Activities', href: '/activities' },
-  { name: 'Events', href: '/events' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'HOME', href: '/' },
+  { name: 'ABOUT US', href: '/about' },
+  { name: 'ACTIVITIES', href: '/activities' },
+  { name: 'EVENTS', href: '/events' },
+  { name: 'CONTACT', href: '/contact' },
 ];
 
 const socialLinks = computed(() => [
@@ -79,7 +79,7 @@ const socialLinks = computed(() => [
                    <img src="images/logo.jpg" alt="Redeemer Christian Church Logo" class="block h-14 w-auto rounded-lg bg-white object-contain px-2 py-1">
                 </div>
                 <div class="">
-                  <h6 style="font-weight: bolder;">Redemeer Christain <p></p> Fellowship Ministry</h6>
+                  <h6 style="font-weight: bolder;">REDEEMER CHRISTIAN <p></p> FELLOWSHIP MINISTRY</h6>
                 </div>               
               </div>
             </div>

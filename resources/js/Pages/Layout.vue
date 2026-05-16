@@ -74,12 +74,12 @@ const socialLinks = computed(() => [
         <div class="flex items-center justify-between gap-4">
           <Link href="/" class="flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-900">
             <div class="rounded-xl from-red-600 to-blue-600 p-1">
-              <div style="display:block">
+              <div style="display:inline-flex;align-items:center;gap:0.5rem;" class="rounded-lg bg-white p-1">
                 <div class="">
                    <img src="images/logo.jpg" alt="Redeemer Christian Church Logo" class="block h-14 w-auto rounded-lg bg-white object-contain px-2 py-1">
                 </div>
                 <div class="">
-                  <h6>Redemeer Christain Fellowship Ministry</h6>
+                  <h6 style="font-weight: bolder;">Redemeer Christain <p></p> Fellowship Ministry</h6>
                 </div>               
               </div>
             </div>

@@ -15,7 +15,7 @@ const submit = () => {
     <Head title="Give Online" />
     <section class="rounded-3xl border border-slate-200 bg-white p-8">
       <h1 class="text-3xl font-bold">Give Online</h1>
-      <p class="mt-3 text-slate-600">Secure giving powered by Stripe.</p>
+      <p class="mt-3 text-slate-600">Secure giving powered by Pesapal.</p>
       <p v-if="status === 'success'" class="mt-3 text-green-700">Thank you for your donation!</p>
       <p v-if="status === 'failure'" class="mt-3 text-red-700">Donation failed. Please try again.</p>
       <form class="mt-6 space-y-3" @submit.prevent="submit">

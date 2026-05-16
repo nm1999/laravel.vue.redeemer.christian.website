@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
         <div class="space-y-8">
           <div class="space-y-4">
             <p class="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-red-700">Welcome home</p>
-            <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Redeemer Church: a brighter place for faith, family, and fresh hope.</h1>
+            <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5l">Redeemer Church: a brighter place for faith, family, and fresh hope.</h1>
             <p class="max-w-3xl text-lg leading-8 text-slate-700">Explore worship, groups, stories, and service opportunities designed to help you grow spiritually and feel connected in every season.</p>
           </div>
 

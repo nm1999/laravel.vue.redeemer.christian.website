@@ -23,7 +23,6 @@ const submit = () => {
         <input v-model.number="form.amount" type="number" min="100" class="w-full rounded border p-2">
         <button class="rounded bg-blue-600 px-4 py-2 text-white">Continue</button>
       </form>
-      <p v-if="!publicKey" class="mt-4 text-sm text-amber-700">Stripe key not configured. Demo mode enabled.</p>
     </section>
   </Layout>
 </template>

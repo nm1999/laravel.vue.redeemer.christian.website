@@ -70,12 +70,12 @@ class DonationController extends Controller
     public function createPayment(Request $request){
         $client = new Client();
 
-        $amount = $request->input("amount");
-        $description = $request->input("description");
-        $email = $request->input("email");
-        $callbackUrl = $request->input('callback_url');
-        $consumerKey = $request->input('consumer_key');
-        $consumerSecret = $request->input('consumer_secret_key');
+        // $amount = $request->input("amount");
+        // $description = $request->input("description");
+        // $email = $request->input("email");
+        // $callbackUrl = $request->input('callback_url');
+        $consumerKey = env('CONSUMER_KEY');
+        $consumerSecret = env('CONSUMER_SECRET');
 
         // processing requests
         $requiredKeys = ['amount', 'description', 'email']; 
@@ -89,8 +89,8 @@ class DonationController extends Controller
       
         
       // Define subscription details
-      // $amount = "500"; // Subscription amount
-      // $description = "Monthly Subscription"; // Payment description
+      $amount = "500"; // Subscription amount
+      $description = "Monthly Subscription"; // Payment description
       $type = "MERCHANT"; // Payment type
       $reference = uniqid(); // Unique payment reference
       // $email = "jj@example.com"; // Customer's email

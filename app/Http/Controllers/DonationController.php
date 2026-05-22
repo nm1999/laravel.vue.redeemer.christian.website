@@ -14,10 +14,70 @@ use GuzzleHttp\Client;
 
 class DonationController extends Controller
 {
-    public function create(): Response
+    public function create(Request $request)
     {
+        $client = new Client();
+
+        $amount = "500";
+        $description = "Testing";
+        $email ="test@gmail";
+        $callbackUrl = "http://127.0.0.1:8000/events";
+        $consumerKey = env('CONSUMER_KEY');
+        $consumerSecret = env('CONSUMER_SECRET');
+
+        // processing requests
+        $requiredKeys = ['amount', 'description', 'email']; 
+
+        // foreach ($requiredKeys as $key) {
+        //   if (!$request->has($key)) {
+        //       return response()->json(['error' => 'Missing required key: ' . $key], 400);
+        //   }
+        // }
+
+      
+        
+      // Define subscription details
+      $amount = "500"; // Subscription amount
+      $description = "Monthly Subscription"; // Payment description
+      $type = "MERCHANT"; // Payment type
+      $reference = uniqid(); // Unique payment reference
+      // $email = "jj@example.com"; // Customer's email
+      
+      // Initialize PesaPal consumer
+      $consumer = new OAuthConsumer($consumerKey, $consumerSecret);
+        
+        // PesaPal URL endpoints
+        // $callbackUrl = "https://localhost/nenapay/callback.php"; // Replace with your callback URL
+        $pesaPalPostUrl = "https://www.pesapal.com/API/PostPesapalDirectOrderV4"; // API endpoint
+        
+        // Prepare the request
+        $postXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+        <PesapalDirectOrderInfo
+          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+          xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+          Amount=\"$amount\"
+          Description=\"$description\"
+          Type=\"$type\"
+          Reference=\"$reference\"
+          Email=\"$email\"
+          xmlns=\"http://www.pesapal.com\" />";
+        
+        $postXml = htmlentities($postXml);
+        
+        // Generate OAuth signature
+        $signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
+        $request = OAuthRequest::from_consumer_and_token($consumer, NULL, "POST", $pesaPalPostUrl, NULL);
+        $request->set_parameter("oauth_callback", $callbackUrl);
+        $request->set_parameter("pesapal_request_data", $postXml);
+        $request->sign_request($signatureMethod, $consumer, NULL);
+        
+        // Get the signed URL
+        $signedUrl = $request->to_url();
+
+
         return Inertia::render('Donate', [
             'publicKey' => config('services.stripe.key'),
+            'url' => $signedUrl
         ]);
     }
 
@@ -67,67 +127,6 @@ class DonationController extends Controller
     }
 
 
-    public function createPayment(Request $request){
-        $client = new Client();
-
-        $amount = $request->input("amount");
-        $description = $request->input("description");
-        $email = $request->input("email");
-        $callbackUrl = $request->input('callback_url');
-        $consumerKey = $request->input('consumer_key');
-        $consumerSecret = $request->input('consumer_secret_key');
-
-        // processing requests
-        $requiredKeys = ['amount', 'description', 'email']; 
-
-        foreach ($requiredKeys as $key) {
-          if (!$request->has($key)) {
-              return response()->json(['error' => 'Missing required key: ' . $key], 400);
-          }
-        }
-
-      
-        
-      // Define subscription details
-      // $amount = "500"; // Subscription amount
-      // $description = "Monthly Subscription"; // Payment description
-      $type = "MERCHANT"; // Payment type
-      $reference = uniqid(); // Unique payment reference
-      // $email = "jj@example.com"; // Customer's email
-      
-      // Initialize PesaPal consumer
-      $consumer = new OAuthConsumer($consumerKey, $consumerSecret);
-        
-        // PesaPal URL endpoints
-        // $callbackUrl = "https://localhost/nenapay/callback.php"; // Replace with your callback URL
-        $pesaPalPostUrl = "https://www.pesapal.com/API/PostPesapalDirectOrderV4"; // API endpoint
-        
-        // Prepare the request
-        $postXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-        <PesapalDirectOrderInfo
-          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-          xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
-          Amount=\"$amount\"
-          Description=\"$description\"
-          Type=\"$type\"
-          Reference=\"$reference\"
-          Email=\"$email\"
-          xmlns=\"http://www.pesapal.com\" />";
-        
-        $postXml = htmlentities($postXml);
-        
-        // Generate OAuth signature
-        $signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
-        $request = OAuthRequest::from_consumer_and_token($consumer, NULL, "POST", $pesaPalPostUrl, NULL);
-        $request->set_parameter("oauth_callback", $callbackUrl);
-        $request->set_parameter("pesapal_request_data", $postXml);
-        $request->sign_request($signatureMethod, $consumer, NULL);
-        
-        // Get the signed URL
-        $signedUrl = $request->to_url();
-
-        return view('welcome',["url"=>$signedUrl]);
-    }
 }
 class OAuthConsumer {
     public $key;

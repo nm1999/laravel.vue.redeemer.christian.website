@@ -153,7 +153,7 @@ Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
 
 Route::get('/donate', [DonationController::class, 'create'])->name('donate.create');
-Route::post('/donate', [DonationController::class, 'createPayment'])->name('donate.store');
+Route::get('/initiate-donation', [DonationController::class, 'createPayment'])->name('donate.store');
 // Route::post('/donate/payment-intent', [DonationController::class, 'paymentIntent'])->name('donate.payment-intent');
 // Route::get('/donate/success', [DonationController::class, 'success'])->name('donate.success');
 // Route::get('/donate/failure', [DonationController::class, 'failure'])->name('donate.failure');

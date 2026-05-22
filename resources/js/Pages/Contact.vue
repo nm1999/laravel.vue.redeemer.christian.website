@@ -84,7 +84,7 @@ const submitMessage = () => {
         <div class="space-y-6">
           <div>
             <p class="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Contact</p>
-            <h1 class="mt-4 text-4xl font-bold text-slate-900">Reach out to Redeemer Church.</h1>
+            <h1 class="mt-4 text-4xl font-bold text-slate-900">Reach out to Us.</h1>
             <p class="mt-4 text-slate-700 leading-8">We’d love to welcome you, answer questions, and share how you can connect with our community.</p>
           </div>
 

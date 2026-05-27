@@ -164,7 +164,7 @@ const submitMessage = () => {
             <button
               type="submit"
               :disabled="form.processing"
-              class="inline-flex w-full justify-center rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+              class="inline-flex w-full justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {{ form.processing ? 'Sending...' : 'Send message' }}
             </button>

@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\DonationController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PrayerRequestController;
+use App\Http\Controllers\PesapalController;
 use App\Models\ChurchLeader;
 use App\Models\Event;
 use App\Models\HeroSlide;
@@ -152,11 +152,8 @@ Route::get('/contact', function () {
 Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name('prayer-requests.create');
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
 
-Route::get('/donate', [DonationController::class, 'create'])->name('donate.create');
-Route::get('/initiate-donation', [DonationController::class, 'createPayment'])->name('donate.store');
-// Route::post('/donate/payment-intent', [DonationController::class, 'paymentIntent'])->name('donate.payment-intent');
-// Route::get('/donate/success', [DonationController::class, 'success'])->name('donate.success');
-// Route::get('/donate/failure', [DonationController::class, 'failure'])->name('donate.failure');
+Route::get('/donate', [PesapalController::class, 'index'])->name('donate.index');
+Route::get('/initiate-payment', [PesapalController::class, 'createPayment'])->name('donate.store');
 Route::get('/api/site-details', function(){
     return SiteSettings::first();
 });

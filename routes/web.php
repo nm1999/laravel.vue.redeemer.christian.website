@@ -153,7 +153,7 @@ Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
 
 Route::get('/donate', [PesapalController::class, 'index'])->name('donate.index');
-Route::get('/initiate-payment', [PesapalController::class, 'createPayment'])->name('donate.store');
+Route::post('/initiate-payment', [PesapalController::class, 'createPayment'])->name('donate.store');
 Route::get('/api/site-details', function(){
     return SiteSettings::first();
 });

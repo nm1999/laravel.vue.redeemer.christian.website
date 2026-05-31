@@ -1,30 +1,27 @@
 <script setup>
 import Layout from './Layout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch, toRefs } from 'vue';
 
 const props = defineProps({ publicKey: String, status: String, url: String });
-const form = useForm({ amount: 2500, currency: 'USD' });
-const selectedAmount = ref(2500);
-const amountOptions = [2500, 5000, 10000, 20000];
+const { url, status } = toRefs(props);
+
+watch(url, (newVal, oldVal) => {
+  if(oldVal !== newVal) {
+    window.location.href = newVal;
+  }
+});
+const form = useForm({ amount: '', description: '', email: '', callback_url: 'https://github.com/nm1999/PesaPal', consumer_key: 'rucWgAxGe2yqlHDKnc3GFFfOG/jJECdk', consumer_secret_key: 'exky6Ytq4mD99FQaj6iveoy6B6U=' });
 
 const submit = () => {
-  form.amount = selectedAmount.value;
-  form.post(props.url || '/donate');
+  form.post('/initiate-payment');
 };
-
-const formattedAmount = computed(() => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: form.currency,
-    maximumFractionDigits: 0,
-  }).format(selectedAmount.value / 100);
-});
 </script>
 
 <template>
   <Layout>
     <Head title="Give Online" />
+
 
     <section class="mx-auto max-w-6xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
       <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
@@ -86,7 +83,7 @@ const formattedAmount = computed(() => {
               <div class="flex items-center justify-between gap-4">
                 <div>
                   <p class="text-sm text-slate-500">Selected amount</p>
-                  <p class="mt-2 text-3xl font-semibold text-slate-900">{{ formattedAmount }}</p>
+                  <p class="mt-2 text-3xl font-semibold text-slate-900"></p>
                 </div>
                 <span class="rounded-2xl bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700">USD</span>
               </div>
@@ -95,30 +92,24 @@ const formattedAmount = computed(() => {
             <div>
               <p class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">Choose an amount</p>
               <div class="grid gap-3 sm:grid-cols-2">
-                <button
-                  v-for="amount in amountOptions"
-                  :key="amount"
-                  type="button"
-                  @click="selectedAmount = amount"
-                  :class="['rounded-3xl border px-4 py-3 text-left transition-all duration-200', selectedAmount === amount ? 'border-blue-600 bg-blue-600 text-white shadow-lg' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-slate-50']"
-                >
-                  <span class="block text-sm">{{ new Intl.NumberFormat('en-US', { style: 'currency', currency: form.currency, maximumFractionDigits: 0 }).format(amount / 100) }}</span>
-                  <span class="mt-1 block text-xs text-slate-500">A thoughtful gift</span>
-                </button>
+                
               </div>
             </div>
 
             <form @submit.prevent="submit" class="space-y-4">
               <div>
                 <label class="mb-2 block text-sm font-medium text-slate-700">Custom amount</label>
-                <input
-                  v-model.number="selectedAmount"
-                  type="number"
-                  min="100"
-                  step="100"
-                  class="w-full rounded-3xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                />
+                
+                
+
+                <input type="number" v-model="form.amount" name="amount" placeholder="amount"> <br>
+                <input type="email" v-model="form.email" name="email" value="admin@benina.net"> <br>
+                <input type="text" v-model="form.description" name="description" placeholder="description"> <br>
+                <input type="text" v-model="form.callback_url" name="callback_url" placeholder="callback url"> <br>
+                <input type="text" v-model="form.consumer_key" name="consumer_key" placeholder="consumer key">
+                <input type="text" v-model="form.consumer_secret_key" name="consumer_secret_key" placeholder="consumer secret key">
               </div>
+              <p>{{  url }}</p>
               <button class="btn-primary w-full" type="submit">Proceed to Donate</button>
             </form>
 

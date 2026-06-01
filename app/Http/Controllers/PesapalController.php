@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Http;
 
 class PesapalController extends Controller
 {
@@ -33,41 +34,61 @@ class PesapalController extends Controller
             }
         }
 
-        $type = 'MERCHANT'; // Payment type
-        $reference = uniqid(); // Unique payment reference
-       
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post('https://pay.pesapal.com/v3/api/Auth/RequestToken', [
+            'consumer_key' =>$consumerKey,
+            'consumer_secret' => $consumerSecret,
+        ]);
 
-        // Initialize PesaPal consumer
-        $consumer = new OAuthConsumer($consumerKey, $consumerSecret);
+        $token = $response->json()['token'];
+        // dd($token);
 
-        // PesaPal URL endpoints
-        $pesaPalPostUrl = 'https://www.pesapal.com/API/PostPesapalDirectOrderV4'; // API endpoint
 
-        // Prepare the request
-        $postXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-        <PesapalDirectOrderInfo
-          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-          xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
-          Amount=\"$amount\"
-          Description=\"$description\"
-          Type=\"$type\"
-          Reference=\"$reference\"
-          Email=\"$email\"
-          xmlns=\"http://www.pesapal.com\" />";
+        // sending the payload to pesapal 
+         $response = Http::withHeaders([
+            'Authorization' => 'Bearer '.$token,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post('https://pay.pesapal.com/v3/api/Transactions/SubmitOrderRequest', [
+            "id" => "AA1122-3344ZZ",
+            "currency"=> "UGX",
+            "amount"=> $amount,
+            "description"=> $description  ,
+            "callback_url"=>"https://www.myapplication.com/response-page",
+            "redirect_mode"=>"",
+            "notification_id"=>"f903770b-3b29-4a25-89ff-da5073681223",
+            "branch" =>  "Store Name - HQ",
+            "billing_address" => [
+                "email_address"=> "john.doe@example.com",
+                "phone_number"=> "0781260856",
+                "country_code"=> "UG",
+                "first_name"=> "John",
+                "middle_name"=> "",
+                "last_name"=> "Doe",
+                "line_1"=> "Pesapal Limited",
+                "line_2"=> "",
+                "city"=> "",
+                "state"=> "",
+                "postal_code"=> "",
+                "zip_code"=> ""
+            ]
+        ]);
 
-        $postXml = htmlentities($postXml);
+        $url = '';
+        $orderId = '';
 
-        // Generate OAuth signature
-        $signatureMethod = new OAuthSignatureMethod_HMAC_SHA1;
-        $request = OAuthRequest::from_consumer_and_token($consumer, null, 'POST', $pesaPalPostUrl, null);
-        $request->set_parameter('oauth_callback', $callbackUrl);
-        $request->set_parameter('pesapal_request_data', $postXml);
-        $request->sign_request($signatureMethod, $consumer, null);
+        if($response->json()['status'] == 200){
+          $url = $response->json()['redirect_url'];
+          $orderId = $response->json()['order_tracking_id'];
+        }
 
-        // Get the signed URL
-        $signedUrl = $request->to_url();
-
-        return Inertia::render('Donate', ['url' => $signedUrl]);
+        return Inertia::render('Donate',[
+          'data'=> $response->json(),
+          'url'=> $url,
+          'order_tracking_id'=> $orderId,
+        ]);
     }
 }
 

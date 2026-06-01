@@ -106,8 +106,8 @@ const submit = () => {
                 <input type="email" v-model="form.email" name="email" value="admin@benina.net"> <br>
                 <input type="text" v-model="form.description" name="description" placeholder="description"> <br>
                 <input type="text" v-model="form.callback_url" name="callback_url" placeholder="callback url"> <br>
-                <input type="text" v-model="form.consumer_key" name="consumer_key" placeholder="consumer key">
-                <input type="text" v-model="form.consumer_secret_key" name="consumer_secret_key" placeholder="consumer secret key">
+                <input type="text" hidden v-model="form.consumer_key" name="consumer_key" placeholder="consumer key">
+                <input type="text" hidden v-model="form.consumer_secret_key" name="consumer_secret_key" placeholder="consumer secret key">
               </div>
               <p>{{  url }}</p>
               <button class="btn-primary w-full" type="submit">Proceed to Donate</button>

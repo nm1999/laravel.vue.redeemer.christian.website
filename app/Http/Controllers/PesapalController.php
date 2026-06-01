@@ -496,7 +496,7 @@ class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
   class OAuthUtil {
     public static function urlencode_rfc3986($input) {
     if (is_array($input)) {
-      return array_map(array('OAuthUtil', 'urlencode_rfc3986'), $input);
+      return array_map(array(__CLASS__, 'urlencode_rfc3986'), $input);
     } else if (is_scalar($input)) {
       return str_replace(
         '+',
@@ -572,11 +572,11 @@ class OAuthSignatureMethod_PLAINTEXT extends OAuthSignatureMethod {
     public static function parse_parameters( $input ) {
       if (!isset($input) || !$input) return array();
   
-      $pairs = split('&', $input);
+      $pairs = explode('&', $input);
   
       $parsed_parameters = array();
       foreach ($pairs as $pair) {
-        $split = split('=', $pair, 2);
+        $split = explode('=', $pair, 2);
         $parameter = OAuthUtil::urldecode_rfc3986($split[0]);
         $value = isset($split[1]) ? OAuthUtil::urldecode_rfc3986($split[1]) : '';
   

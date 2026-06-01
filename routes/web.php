@@ -153,6 +153,8 @@ Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
 
 Route::get('/donate', [PesapalController::class, 'index'])->name('donate.index');
+Route::get('/initiate-payment', fn () => redirect()->route('donate.index'))
+    ->name('donate.redirect');
 Route::post('/initiate-payment', [PesapalController::class, 'createPayment'])
     ->name('donate.store')
     ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);

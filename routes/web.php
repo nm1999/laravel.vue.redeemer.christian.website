@@ -48,23 +48,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/api/church-leaders', function () {
-    return response()->json([
-        'data' => ChurchLeader::query()
-            ->orderBy('order')
-            ->orderBy('name')
-            ->get()
-            ->map(fn (ChurchLeader $churchLeader) => [
-                'id' => $churchLeader->id,
-                'name' => $churchLeader->name,
-                'title' => $churchLeader->title,
-                'image' => $churchLeader->image_url,
-                'bio' => $churchLeader->bio,
-                'order' => $churchLeader->order,
-            ])
-            ->values(),
-    ]);
-})->name('church-leaders.index');
+
 
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 Route::get('/gallery', fn () => Inertia::render('Gallery', [
@@ -197,6 +181,26 @@ Route::prefix('api')->group(function () {
             'siteSettings' => SiteSettings::query()->first(),
         ]);
     })->name('api.home');
+
+    Route::get('/church-leaders', function () {
+        return response()->json([
+            'data' => ChurchLeader::query()
+                ->orderBy('order')
+                ->orderBy('name')
+                ->get()
+                ->map(fn (ChurchLeader $churchLeader) => [
+                    'id' => $churchLeader->id,
+                    'name' => $churchLeader->name,
+                    'title' => $churchLeader->title,
+                    'image' => $churchLeader->image_url,
+                    'bio' => $churchLeader->bio,
+                    'order' => $churchLeader->order,
+                ])->values(),
+    ]);
+})->name('church-leaders.index');
+
+
+
 });
 
 Route::get('/storage-link', function () {

@@ -7,18 +7,12 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 const dataObject = ref({
     featuredEvents: [],
-    homeGalleryImages: [],
-    heroSlides: [],
     activeLiveStream: null,
     siteSettings: null,
 });
-const defaultHomeGalleryImages = [
-    "/images/1.jpg",
-    "/images/2.jpg",
-    "/images/3.jpg",
-    "/images/4.jpg",
-    "/images/1.jpg",
-];
+
+// const heroSlides = ref([]);
+const homeGalleryImages = ref([]);
 
 const defaultHeroSlides = [
     {
@@ -55,10 +49,7 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
-    homeGalleryImages: {
-        type: Array,
-        default: () => [],
-    },
+    
     heroSlides: {
         type: Array,
         default: () => [],
@@ -72,13 +63,6 @@ const props = defineProps({
         default: null,
     },
 });
-
-const homeGalleryImages = props.homeGalleryImages.length
-    ? props.homeGalleryImages
-    : defaultHomeGalleryImages;
-const heroSlides = props.heroSlides.length
-    ? props.heroSlides
-    : defaultHeroSlides;
 
 const carouselSlides = [
     {
@@ -260,6 +244,9 @@ const openLiveVideo = () => {
 const loadData = async ()=>  {
     const response  = await axios.get("/api/home-page-data");
     dataObject.value.siteSettings = response.data.siteSettings;
+    dataObject.value.featuredEvents = response.data.featuredEvents;
+    homeGalleryImages.value = response.data.homeGalleryImages;
+    // heroSlides.value = response.data.heroSlides;
     console.log("Home data:", response.data);
 };
 
@@ -381,6 +368,8 @@ onBeforeUnmount(() => {
         </section>
         <br>
 
+        <h1>{{ homeGalleryImages.length || 0 }}</h1>
+
         <!-- Mission, Vision & Contact — shown when set in admin Site Settings -->
         <section
             class="scroll-reveal reveal-from-bottom mt-0 mb-10 grid gap-6 md:grid-cols-3"
@@ -443,7 +432,7 @@ onBeforeUnmount(() => {
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                         />
                     </svg>
-                    {{ siteSettings.email }}
+                    {{ dataObject.siteSettings.email }}
                 </a>
             </div>
         </section>
@@ -673,13 +662,13 @@ onBeforeUnmount(() => {
 
         <!-- Intro video: plays before the hero slider when set in admin -->
         <section
-            v-if="siteSettings?.intro_video_url"
+            v-if="dataObject.siteSettings?.intro_video_url"
             class="mb-6 overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
         >
             <div class="relative w-full" style="padding-top: 56.25%">
                 <iframe
                     class="absolute inset-0 h-full w-full"
-                    :src="introVideoSrc"
+                    :src="dataObject.siteSettings?.intro_video_url"
                     title="Church Intro Video"
                     frameborder="0"
                     allow="
@@ -798,6 +787,12 @@ onBeforeUnmount(() => {
                 </p>
             </div>
 
+            <h1>Hello  {{ homeGalleryImages.length || 0 }}</h1>
+            <div>
+                <p v-for="(x,index) in homeGalleryImages"> 
+                    <span>{{ index }} "http://127.0.0.1:8000{{ x }}"</span>
+                </p>
+            </div>
             <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <figure
                     v-for="(image, index) in homeGalleryImages"
@@ -811,7 +806,7 @@ onBeforeUnmount(() => {
                     :style="{ '--reveal-delay': `${index * 90}ms` }"
                 >
                     <img
-                        :src="image"
+                        :src="image"                        
                         :alt="`Redeemer church photo ${index + 1}`"
                         class="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
                         loading="lazy"

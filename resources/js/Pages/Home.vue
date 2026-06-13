@@ -1,8 +1,17 @@
 <script setup>
 import Layout from "./Layout.vue";
 import { Head, Link } from "@inertiajs/vue3";
+import axios from "axios";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
+
+const dataObject = ref({
+    featuredEvents: [],
+    homeGalleryImages: [],
+    heroSlides: [],
+    activeLiveStream: null,
+    siteSettings: null,
+});
 const defaultHomeGalleryImages = [
     "/images/1.jpg",
     "/images/2.jpg",
@@ -248,14 +257,18 @@ const openLiveVideo = () => {
     }
 };
 
-const closeLiveVideo = () => {
-    showVideoModal.value = false;
+const loadData = async ()=>  {
+    const response  = await axios.get("/api/home-page-data");
+    dataObject.value.siteSettings = response.data.siteSettings;
+    console.log("Home data:", response.data);
 };
+
 
 onMounted(() => {
     startHeroSlideTimer();
     startSlideTimer();
     setupScrollReveal();
+    loadData();
 });
 
 onBeforeUnmount(() => {
@@ -370,15 +383,10 @@ onBeforeUnmount(() => {
 
         <!-- Mission, Vision & Contact — shown when set in admin Site Settings -->
         <section
-            v-if="
-                siteSettings?.mission ||
-                siteSettings?.vision ||
-                siteSettings?.email
-            "
             class="scroll-reveal reveal-from-bottom mt-0 mb-10 grid gap-6 md:grid-cols-3"
         >
             <div
-                v-if="siteSettings?.mission"
+                v-if="dataObject.siteSettings?.mission"
                 class="rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
             >
                 <p
@@ -387,12 +395,12 @@ onBeforeUnmount(() => {
                     Our Mission
                 </p>
                 <p class="mt-4 leading-7 text-slate-700">
-                    {{ siteSettings.mission }}
+                    {{ dataObject.siteSettings?.mission }}
                 </p>
             </div>
 
             <div
-                v-if="siteSettings?.vision"
+                v-if="dataObject.siteSettings?.vision"
                 class="rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/40"
             >
                 <p
@@ -401,12 +409,12 @@ onBeforeUnmount(() => {
                     Our Vision
                 </p>
                 <p class="mt-4 leading-7 text-slate-700">
-                    {{ siteSettings.vision }}
+                    {{ dataObject.siteSettings.vision }}
                 </p>
             </div>
 
             <div
-                v-if="siteSettings?.email"
+                v-if="dataObject.siteSettings?.email"
                 class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/40 flex flex-col justify-between"
             >
                 <p
@@ -418,7 +426,7 @@ onBeforeUnmount(() => {
                     Have a question or need prayer? We'd love to hear from you.
                 </p>
                 <a
-                    :href="`mailto:${siteSettings.email}`"
+                    :href="`mailto:${dataObject.siteSettings.email}`"
                     class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900"
                 >
                     <svg

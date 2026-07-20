@@ -3,6 +3,7 @@
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PesapalController;
 use App\Http\Controllers\PrayerRequestController;
+use App\Http\Controllers\ApiController;
 use App\Models\ChurchLeader;
 use App\Models\Event;
 use App\Models\HeroSlide;
@@ -154,53 +155,8 @@ Route::get('/api/site-details', function () {
 Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 
 Route::prefix('api')->group(function () {
-    Route::get('/home-page-data', function () {
-        return response()->json([
-            'featuredEvents' => Event::query()->where('starts_at', '>=', now())->orderBy('starts_at')->limit(3)->get(),
-            'heroSlides' => HeroSlide::query()
-                ->where('is_active', true)
-                ->orderBy('order')
-                ->orderBy('id')
-                ->get()
-                ->map(fn (HeroSlide $heroSlide) => [
-                    'image' => $heroSlide->image_url,
-                    'kicker' => $heroSlide->kicker,
-                    'title' => $heroSlide->title,
-                    'description' => $heroSlide->description,
-                ])
-                ->values(),
-            'homeGalleryImages' => HomeGalleryImage::query()
-                ->where('is_active', true)
-                ->orderBy('order')
-                ->orderBy('id')
-                ->limit(6)
-                ->get()
-                ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
-                ->values(),
-            'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
-            'siteSettings' => SiteSettings::query()->first(),
-        ]);
-    })->name('api.home');
-
-    Route::get('/church-leaders', function () {
-        return response()->json([
-            'data' => ChurchLeader::query()
-                ->orderBy('order')
-                ->orderBy('name')
-                ->get()
-                ->map(fn (ChurchLeader $churchLeader) => [
-                    'id' => $churchLeader->id,
-                    'name' => $churchLeader->name,
-                    'title' => $churchLeader->title,
-                    'image' => $churchLeader->image_url,
-                    'bio' => $churchLeader->bio,
-                    'order' => $churchLeader->order,
-                ])->values(),
-    ]);
-})->name('church-leaders.index');
-
-
-
+    Route::get('/home-page-data',[ApiController::class,'homepageData'])->name('api.home');
+    Route::get('/church-leaders',[ApiController::class, 'churchleaders'])->name('church-leaders.index');
 });
 
 Route::get('/storage-link', function () {

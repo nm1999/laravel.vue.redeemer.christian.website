@@ -44,10 +44,10 @@ const observeLeaderCards = () => {
 
 
 onMounted(async () => {
-  fetchSiteDetails();
 
   try {
     const response = await axios.get('/api/church-leaders');
+    console.log(response.data.data);
     leadershipTeam.value = response.data.data;
   } catch {
     leadershipTeam.value = [];
@@ -144,8 +144,10 @@ onBeforeUnmount(() => {
         <p class="max-w-2xl text-slate-700">Add or update each profile with a photo, full name, and ministry title as your team grows.</p>
       </div>
 
+
       <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <article
+          v-if="leadershipTeam.length > 0"
           v-for="(leader, index) in leadershipTeam"
           :key="leader.id ?? leader.name"
           data-leader-reveal

@@ -10,6 +10,7 @@ const homeGalleryImages = ref([]);
 const featuredEvents = ref([]);
 const siteSettings = ref({});
 const activeLiveStream = ref({});
+const isLoading = ref(true);
 
 
 const carouselSlides = [
@@ -195,6 +196,7 @@ const loadData = async ()=>  {
     featuredEvents.value = response.data.featuredEvents;
     homeGalleryImages.value = response.data.homeGalleryImages;
     heroSlides.value = response.data.heroSlides;
+    isLoading.value = false;
     console.log("Home data:", response.data);
 };
 
@@ -219,7 +221,7 @@ onBeforeUnmount(() => {
         <Head title="Home" />
 
         <section
-            v-if="activeHeroSlide"
+            v-if="activeHeroSlide >= 0 && !isLoading"
             class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
             @mouseenter="stopHeroSlideTimer"
             @mouseleave="startHeroSlideTimer"

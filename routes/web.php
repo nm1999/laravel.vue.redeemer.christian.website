@@ -17,40 +17,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Home', [
-        'featuredEvents' => Event::query()
-            ->where('starts_at', '>=', now())
-            ->orderBy('starts_at')
-            ->limit(3)
-            ->get(),
-        'heroSlides' => HeroSlide::query()
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (HeroSlide $heroSlide) => [
-                'image' => $heroSlide->image_url,
-                'kicker' => $heroSlide->kicker,
-                'title' => $heroSlide->title,
-                'description' => $heroSlide->description,
-            ])
-            ->values(),
-        'homeGalleryImages' => HomeGalleryImage::query()
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->orderBy('id')
-            ->limit(6)
-            ->get()
-            ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
-            ->values(),
-        'activeLiveStream' => LiveStream::query()->where('is_active', true)->first(),
-        'siteSettings' => SiteSettings::query()->first(),
-    ]);
-})->name('home');
-
-
-
+Route::get('/', fn () => Inertia::render('Home'))->name('home');
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 Route::get('/gallery', fn () => Inertia::render('Gallery', [
     'homeGalleryImages' => HomeGalleryImage::query()

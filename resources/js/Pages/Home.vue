@@ -4,65 +4,13 @@ import { Head, Link } from "@inertiajs/vue3";
 import axios from "axios";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
-
-const dataObject = ref({
-    featuredEvents: [],
-    activeLiveStream: null,
-    siteSettings: null,
-});
-
-// const heroSlides = ref([]);
+const activeHeroSlide = ref(0);
+const heroSlides = ref([]);
 const homeGalleryImages = ref([]);
+const featuredEvents = ref([]);
+const siteSettings = ref({});
+const activeLiveStream = ref({});
 
-const defaultHeroSlides = [
-    {
-        image: "/images/1.jpg",
-        kicker: "Sunday Celebration",
-        title: "Church is family, not just an event.",
-        description:
-            "Worship, community, and practical hope for every generation.",
-    },
-    {
-        image: "/images/2.jpg",
-        kicker: "Life At Redeemer",
-        title: "Belong, grow, and serve together.",
-        description:
-            "Find real friendships, strong teaching, and a place to call home.",
-    },
-    {
-        image: "/images/3.jpg",
-        kicker: "Join This Weekend",
-        title: "A warm welcome is waiting for you.",
-        description:
-            "Come as you are and experience faith that meets everyday life.",
-    },
-    {
-        image: "/images/4.jpg",
-        kicker: "Community Impact",
-        title: "Bringing hope to our city.",
-        description: "From prayer to outreach, we serve with love and purpose.",
-    },
-];
-
-const props = defineProps({
-    featuredEvents: {
-        type: Array,
-        default: () => [],
-    },
-    
-    heroSlides: {
-        type: Array,
-        default: () => [],
-    },
-    activeLiveStream: {
-        type: Object,
-        default: null,
-    },
-    siteSettings: {
-        type: Object,
-        default: null,
-    },
-});
 
 const carouselSlides = [
     {
@@ -110,18 +58,18 @@ const carouselSlides = [
 ];
 
 const activeSlide = ref(0);
-const activeHeroSlide = ref(0);
+
 let slideTimer = null;
 let heroSlideTimer = null;
 let scrollRevealObserver = null;
 
 const nextHeroSlide = () => {
-    activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.length;
+    activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.value.length;
 };
 
 const previousHeroSlide = () => {
     activeHeroSlide.value =
-        (activeHeroSlide.value - 1 + heroSlides.length) % heroSlides.length;
+        (activeHeroSlide.value - 1 + heroSlides.value.length) % heroSlides.value.length;
 };
 
 const goToHeroSlide = (index) => {
@@ -202,7 +150,7 @@ const setupScrollReveal = () => {
 const showVideoModal = ref(false);
 
 const liveVideoSrc = computed(() => {
-    const url = props.activeLiveStream?.embed_url;
+    const url = activeLiveStream.value?.embed_url;
     if (!url) return "";
     try {
         const u = new URL(url);
@@ -215,7 +163,7 @@ const liveVideoSrc = computed(() => {
 });
 
 const introVideoSrc = computed(() => {
-    const url = props.siteSettings?.intro_video_url;
+    const url = siteSettings.value?.intro_video_url;
     if (!url) return "";
     try {
         const u = new URL(url);
@@ -234,7 +182,7 @@ const introVideoSrc = computed(() => {
 });
 
 const openLiveVideo = () => {
-    if (props.activeLiveStream?.embed_url) {
+    if (activeLiveStream.value?.embed_url) {
         showVideoModal.value = true;
     } else {
         window.open("https://www.youtube.com", "_blank", "noopener,noreferrer");
@@ -243,10 +191,10 @@ const openLiveVideo = () => {
 
 const loadData = async ()=>  {
     const response  = await axios.get("/api/home-page-data");
-    dataObject.value.siteSettings = response.data.siteSettings;
-    dataObject.value.featuredEvents = response.data.featuredEvents;
+    siteSettings.value = response.data.siteSettings;
+    featuredEvents.value = response.data.featuredEvents;
     homeGalleryImages.value = response.data.homeGalleryImages;
-    // heroSlides.value = response.data.heroSlides;
+    heroSlides.value = response.data.heroSlides;
     console.log("Home data:", response.data);
 };
 
@@ -271,6 +219,7 @@ onBeforeUnmount(() => {
         <Head title="Home" />
 
         <section
+            v-if="activeHeroSlide"
             class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
             @mouseenter="stopHeroSlideTimer"
             @mouseleave="startHeroSlideTimer"
@@ -368,15 +317,14 @@ onBeforeUnmount(() => {
         </section>
         <br>
 
-        <h1>{{ homeGalleryImages.length || 0 }}</h1>
-
         <!-- Mission, Vision & Contact — shown when set in admin Site Settings -->
         <section
             class="scroll-reveal reveal-from-bottom mt-0 mb-10 grid gap-6 md:grid-cols-3"
         >
             <div
-                v-if="dataObject.siteSettings?.mission"
-                class="rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
+                v-if="siteSettings?.mission"
+                class="fade-in rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
+                mode="out-in"
             >
                 <p
                     class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700"
@@ -384,12 +332,12 @@ onBeforeUnmount(() => {
                     Our Mission
                 </p>
                 <p class="mt-4 leading-7 text-slate-700">
-                    {{ dataObject.siteSettings?.mission }}
+                    {{ siteSettings?.mission }}
                 </p>
             </div>
 
             <div
-                v-if="dataObject.siteSettings?.vision"
+                v-if="siteSettings?.vision"
                 class="rounded-[28px] border border-red-100 bg-red-50 p-6 shadow-lg shadow-red-100/40"
             >
                 <p
@@ -398,12 +346,12 @@ onBeforeUnmount(() => {
                     Our Vision
                 </p>
                 <p class="mt-4 leading-7 text-slate-700">
-                    {{ dataObject.siteSettings.vision }}
+                    {{ siteSettings.vision }}
                 </p>
             </div>
 
             <div
-                v-if="dataObject.siteSettings?.email"
+                v-if="siteSettings?.email"
                 class="rounded-[28px] border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/40 flex flex-col justify-between"
             >
                 <p
@@ -415,7 +363,7 @@ onBeforeUnmount(() => {
                     Have a question or need prayer? We'd love to hear from you.
                 </p>
                 <a
-                    :href="`mailto:${dataObject.siteSettings.email}`"
+                    :href="`mailto:${siteSettings.email}`"
                     class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900"
                 >
                     <svg
@@ -432,7 +380,7 @@ onBeforeUnmount(() => {
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                         />
                     </svg>
-                    {{ dataObject.siteSettings.email }}
+                    {{ siteSettings.email }}
                 </a>
             </div>
         </section>
@@ -662,13 +610,13 @@ onBeforeUnmount(() => {
 
         <!-- Intro video: plays before the hero slider when set in admin -->
         <section
-            v-if="dataObject.siteSettings?.intro_video_url"
+            v-if="siteSettings?.intro_video_url"
             class="mb-6 overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
         >
             <div class="relative w-full" style="padding-top: 56.25%">
                 <iframe
                     class="absolute inset-0 h-full w-full"
-                    :src="dataObject.siteSettings?.intro_video_url"
+                    :src="siteSettings?.intro_video_url"
                     title="Church Intro Video"
                     frameborder="0"
                     allow="
@@ -787,22 +735,12 @@ onBeforeUnmount(() => {
                 </p>
             </div>
 
-            <h1>Hello  {{ homeGalleryImages.length || 0 }}</h1>
-            <div>
-                <p v-for="(x,index) in homeGalleryImages"> 
-                    <span>{{ index }} "http://127.0.0.1:8000{{ x }}"</span>
-                </p>
-            </div>
+          
             <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <figure
                     v-for="(image, index) in homeGalleryImages"
                     :key="image"
-                    class="scroll-reveal group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
-                    :class="
-                        index % 2 === 0
-                            ? 'reveal-from-left'
-                            : 'reveal-from-right'
-                    "
+                    class="group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
                     :style="{ '--reveal-delay': `${index * 90}ms` }"
                 >
                     <img
@@ -882,6 +820,7 @@ onBeforeUnmount(() => {
             </h2>
             <div class="mt-6 grid gap-4 md:grid-cols-3">
                 <article
+                    v-if="featuredEvents.length > 0"
                     v-for="event in featuredEvents"
                     :key="event.id"
                     class="rounded-2xl border border-slate-200 p-4"

@@ -124,6 +124,7 @@ Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsle
 Route::prefix('api')->group(function () {
     Route::get('/home-page-data',[ApiController::class,'homepageData'])->name('api.home');
     Route::get('/church-leaders',[ApiController::class, 'churchleaders'])->name('church-leaders.index');
+    Route::get('/gallery',[ApiController::class, 'gallery'])->name('fetch.gallery');
 });
 
 Route::get('/storage-link', function () {

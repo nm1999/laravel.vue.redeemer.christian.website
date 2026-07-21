@@ -59,6 +59,18 @@ class ApiController extends Controller
                     'bio' => $churchLeader->bio,
                     'order' => $churchLeader->order,
                 ])->values(),
-    ]);
+        ]);
+    }
+
+    public function gallery(){
+        return response()->json([
+            'homeGalleryImages' => HomeGalleryImage::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
+            ->values(),
+        ]);
     }
 }

@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\ChurchLeader;
 use App\Models\Event;
 use App\Models\HeroSlide;
 use App\Models\HomeGalleryImage;
 use App\Models\LiveStream;
-use App\Models\Sermon;
 use App\Models\SiteSettings;
-use App\Models\ChurchLeader;
 
 class ApiController extends Controller
 {
-    public function homepageData(){
+    public function homepageData()
+    {
         return response()->json([
             'featuredEvents' => Event::query()
                 ->where('starts_at', '>=', now())
@@ -45,7 +44,8 @@ class ApiController extends Controller
         ]);
     }
 
-    public function churchleaders(){
+    public function churchleaders()
+    {
         return response()->json([
             'data' => ChurchLeader::query()
                 ->orderBy('order')
@@ -62,21 +62,30 @@ class ApiController extends Controller
         ]);
     }
 
-    public function gallery(){
+    public function gallery()
+    {
         return response()->json([
             'homeGalleryImages' => HomeGalleryImage::query()
-            ->where('is_active', true)
-            ->orderBy('order')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
-            ->values(),
+                ->where('is_active', true)
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get()
+                ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
+                ->values(),
         ]);
     }
 
-    public function events(){
+    public function events()
+    {
         return response()->json([
             'events' => Event::query()->orderBy('starts_at')->get(),
+        ]);
+    }
+
+    public function siteSettings()
+    {
+        return response()->json([
+            'siteSettings' => SiteSettings::query()->first(),
         ]);
     }
 }

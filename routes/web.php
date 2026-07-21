@@ -20,11 +20,12 @@ use Inertia\Inertia;
 Route::get('/', fn () => Inertia::render('Home'))->name('home');
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 Route::get('/gallery', fn () => Inertia::render('Gallery'))->name('gallery');
-Route::get('/events', function () {
-    return Inertia::render('Events', [
-        'events' => Event::query()->orderBy('starts_at')->get(),
+Route::get('/events', fn () => Inertia::render('Events'))->name('events.index');
+Route::get('/contact', function () {
+    return Inertia::render('Contact', [
+        'siteSettings' => SiteSettings::query()->first(['email', 'location']),
     ]);
-})->name('events.index');
+})->name('contact');
 
 Route::get('/activities', function () {
     $resolveImagePath = static function (?string $path): string {
@@ -93,11 +94,7 @@ Route::get('/events/{event:slug}', function (Event $event) {
     ]);
 })->name('events.show');
 
-Route::get('/contact', function () {
-    return Inertia::render('Contact', [
-        'siteSettings' => SiteSettings::query()->first(['email', 'location']),
-    ]);
-})->name('contact');
+
 
 Route::get('/prayer-requests', [PrayerRequestController::class, 'create'])->name('prayer-requests.create');
 Route::post('/prayer-requests', [PrayerRequestController::class, 'store'])->name('prayer-requests.store');
@@ -119,6 +116,7 @@ Route::prefix('api')->group(function () {
     Route::get('/church-leaders',[ApiController::class, 'churchleaders'])->name('church-leaders.index');
     Route::get('/gallery',[ApiController::class, 'gallery'])->name('fetch.gallery');
     Route::get('/events',[ApiController::class, 'events'])->name('fetch.events');
+    Route::get('/site-settings',[ApiController::class, 'siteSettings'])->name('fetch.settings');
 });
 
 Route::get('/storage-link', function () {

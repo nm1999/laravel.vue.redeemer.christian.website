@@ -2,12 +2,19 @@
 import Layout from './Layout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { useScrollReveal } from '../composables/useScrollReveal';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 
 useScrollReveal();
+const settings = ref({});
 
-const props = defineProps({
-  siteSettings: { type: Object, default: null },
+const loadingSettings = async ()=> {
+  const response  = await axios.get("/api/site-settings");
+  settings.value = response.data.siteSettings;
+  console.log(response.data);
+}
+
+onMounted(()=>{
+  loadingSettings();
 });
 
 const page = usePage();
@@ -33,8 +40,8 @@ watch(
   { immediate: true }
 );
 
-const contactEmail = computed(() => props.siteSettings?.email || 'hello@redeemerchurch.org');
-const contactLocation = computed(() => props.siteSettings?.location || '123 Faith Avenue, Main City');
+const contactEmail = computed(() => settings.value?.email || 'hello@redeemerchurch.org');
+const contactLocation = computed(() => settings.value?.location || '123 Faith Avenue, Main City');
 const mapsQuery = computed(() => encodeURIComponent(contactLocation.value));
 const mapsEmbedUrl = computed(() => `https://www.google.com/maps?q=${mapsQuery.value}&output=embed`);
 const mapsOpenUrl = computed(() => `https://www.google.com/maps?q=${mapsQuery.value}`);

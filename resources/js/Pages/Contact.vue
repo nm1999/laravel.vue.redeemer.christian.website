@@ -3,6 +3,7 @@ import Layout from './Layout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { useScrollReveal } from '../composables/useScrollReveal';
 import { computed, ref, watch, onMounted } from 'vue';
+import axios from "axios";
 
 useScrollReveal();
 const settings = ref({});

@@ -21,42 +21,8 @@ Route::get('/', fn () => Inertia::render('Home'))->name('home');
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 Route::get('/gallery', fn () => Inertia::render('Gallery'))->name('gallery');
 Route::get('/events', fn () => Inertia::render('Events'))->name('events.index');
-Route::get('/contact', function () {
-    return Inertia::render('Contact', [
-        'siteSettings' => SiteSettings::query()->first(['email', 'location']),
-    ]);
-})->name('contact');
-
-Route::get('/activities', function () {
-    $resolveImagePath = static function (?string $path): string {
-        if (! $path) {
-            return '/images/1.jpg';
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
-            return $path;
-        }
-
-        return Storage::disk('public')->url($path);
-    };
-
-    return Inertia::render('Blogs', [
-        'posts' => Sermon::query()
-            ->where('is_published', true)
-            ->latest('preached_at')
-            ->get()
-            ->map(fn (Sermon $sermon) => [
-                'slug' => $sermon->slug,
-                'title' => $sermon->title,
-                'excerpt' => $sermon->excerpt,
-                'date' => optional($sermon->preached_at)->format('F j, Y'),
-                'author' => $sermon->speaker,
-                'image' => $resolveImagePath($sermon->image_path),
-                'body1' => $sermon->content,
-                'body2' => null,
-            ]),
-    ]);
-})->name('blog.index');
+Route::get('/contact', fn () => Inertia::render('Contact'))->name('contact');
+Route::get('/activities', fn ()=>Inertia::render('Blogs'))->name('blog.index');
 
 Route::get('/blog/{sermon:slug}', function (Sermon $sermon) {
     $resolveImagePath = static function (?string $path): string {
@@ -117,6 +83,7 @@ Route::prefix('api')->group(function () {
     Route::get('/gallery',[ApiController::class, 'gallery'])->name('fetch.gallery');
     Route::get('/events',[ApiController::class, 'events'])->name('fetch.events');
     Route::get('/site-settings',[ApiController::class, 'siteSettings'])->name('fetch.settings');
+    Route::get('/activities',[ApiController::class, 'activities'])->name('fetch.activities');
 });
 
 Route::get('/storage-link', function () {

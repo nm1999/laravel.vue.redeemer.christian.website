@@ -19,15 +19,12 @@ use Inertia\Inertia;
 
 Route::get('/', fn () => Inertia::render('Home'))->name('home');
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
-Route::get('/gallery', fn () => Inertia::render('Gallery', [
-    'homeGalleryImages' => HomeGalleryImage::query()
-        ->where('is_active', true)
-        ->orderBy('order')
-        ->orderBy('id')
-        ->get()
-        ->map(fn (HomeGalleryImage $homeGalleryImage) => $homeGalleryImage->image_url)
-        ->values(),
-]))->name('gallery');
+Route::get('/gallery', fn () => Inertia::render('Gallery'))->name('gallery');
+Route::get('/events', function () {
+    return Inertia::render('Events', [
+        'events' => Event::query()->orderBy('starts_at')->get(),
+    ]);
+})->name('events.index');
 
 Route::get('/activities', function () {
     $resolveImagePath = static function (?string $path): string {
@@ -87,11 +84,7 @@ Route::get('/blog/{sermon:slug}', function (Sermon $sermon) {
     ]);
 })->name('blog.show');
 
-Route::get('/events', function () {
-    return Inertia::render('Events', [
-        'events' => Event::query()->orderBy('starts_at')->get(),
-    ]);
-})->name('events.index');
+
 
 Route::get('/events/{event:slug}', function (Event $event) {
     return Inertia::render('Events', [
@@ -125,6 +118,7 @@ Route::prefix('api')->group(function () {
     Route::get('/home-page-data',[ApiController::class,'homepageData'])->name('api.home');
     Route::get('/church-leaders',[ApiController::class, 'churchleaders'])->name('church-leaders.index');
     Route::get('/gallery',[ApiController::class, 'gallery'])->name('fetch.gallery');
+    Route::get('/events',[ApiController::class, 'events'])->name('fetch.events');
 });
 
 Route::get('/storage-link', function () {

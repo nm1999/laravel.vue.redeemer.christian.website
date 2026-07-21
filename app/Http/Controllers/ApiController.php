@@ -73,4 +73,10 @@ class ApiController extends Controller
             ->values(),
         ]);
     }
+
+    public function events(){
+        return response()->json([
+            'events' => Event::query()->orderBy('starts_at')->get(),
+        ]);
+    }
 }

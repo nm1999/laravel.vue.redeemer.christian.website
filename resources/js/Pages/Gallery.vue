@@ -1,12 +1,22 @@
 <script setup>
 import Layout from "./Layout.vue";
 import { Head, Link } from "@inertiajs/vue3";
-const props = defineProps({
-  homeGalleryImages: {
-    type: Array,
-    default: () => [],
-  },
+import axios from "axios";
+import { onMounted, ref } from "vue";
+const gallery = ref([]);
+const isLoading = ref(true);
+const fetchImages = async () =>{
+    const response  = await axios.get("/api/gallery");
+    gallery.value = response.data.homeGalleryImages;
+    isLoading.value = false;
+}
+
+onMounted(() => {
+    fetchImages();
 });
+
+
+
 </script>
 <template>
     <Layout>
@@ -20,9 +30,9 @@ const props = defineProps({
                 </div>
             </div>
 
-            <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div v-if="!isLoading" class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <figure
-                    v-for="(image, index) in homeGalleryImages"
+                    v-for="(image, index) in gallery"
                     :key="image"
                     class="rounded-[24px] group border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
                     

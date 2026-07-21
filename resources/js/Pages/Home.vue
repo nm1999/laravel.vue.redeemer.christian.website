@@ -1,75 +1,17 @@
 <script setup>
 import Layout from "./Layout.vue";
 import { Head, Link } from "@inertiajs/vue3";
+import axios from "axios";
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
-const defaultHomeGalleryImages = [
-    "/images/1.jpg",
-    "/images/2.jpg",
-    "/images/3.jpg",
-    "/images/4.jpg",
-    "/images/1.jpg",
-];
+const activeHeroSlide = ref(0);
+const heroSlides = ref([]);
+const homeGalleryImages = ref([]);
+const featuredEvents = ref([]);
+const siteSettings = ref({});
+const activeLiveStream = ref({});
+const isLoading = ref(true);
 
-const defaultHeroSlides = [
-    {
-        image: "/images/1.jpg",
-        kicker: "Sunday Celebration",
-        title: "Church is family, not just an event.",
-        description:
-            "Worship, community, and practical hope for every generation.",
-    },
-    {
-        image: "/images/2.jpg",
-        kicker: "Life At Redeemer",
-        title: "Belong, grow, and serve together.",
-        description:
-            "Find real friendships, strong teaching, and a place to call home.",
-    },
-    {
-        image: "/images/3.jpg",
-        kicker: "Join This Weekend",
-        title: "A warm welcome is waiting for you.",
-        description:
-            "Come as you are and experience faith that meets everyday life.",
-    },
-    {
-        image: "/images/4.jpg",
-        kicker: "Community Impact",
-        title: "Bringing hope to our city.",
-        description: "From prayer to outreach, we serve with love and purpose.",
-    },
-];
-
-const props = defineProps({
-    featuredEvents: {
-        type: Array,
-        default: () => [],
-    },
-    homeGalleryImages: {
-        type: Array,
-        default: () => [],
-    },
-    heroSlides: {
-        type: Array,
-        default: () => [],
-    },
-    activeLiveStream: {
-        type: Object,
-        default: null,
-    },
-    siteSettings: {
-        type: Object,
-        default: null,
-    },
-});
-
-const homeGalleryImages = props.homeGalleryImages.length
-    ? props.homeGalleryImages
-    : defaultHomeGalleryImages;
-const heroSlides = props.heroSlides.length
-    ? props.heroSlides
-    : defaultHeroSlides;
 
 const carouselSlides = [
     {
@@ -117,18 +59,18 @@ const carouselSlides = [
 ];
 
 const activeSlide = ref(0);
-const activeHeroSlide = ref(0);
+
 let slideTimer = null;
 let heroSlideTimer = null;
 let scrollRevealObserver = null;
 
 const nextHeroSlide = () => {
-    activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.length;
+    activeHeroSlide.value = (activeHeroSlide.value + 1) % heroSlides.value.length;
 };
 
 const previousHeroSlide = () => {
     activeHeroSlide.value =
-        (activeHeroSlide.value - 1 + heroSlides.length) % heroSlides.length;
+        (activeHeroSlide.value - 1 + heroSlides.value.length) % heroSlides.value.length;
 };
 
 const goToHeroSlide = (index) => {
@@ -209,7 +151,7 @@ const setupScrollReveal = () => {
 const showVideoModal = ref(false);
 
 const liveVideoSrc = computed(() => {
-    const url = props.activeLiveStream?.embed_url;
+    const url = activeLiveStream.value?.embed_url;
     if (!url) return "";
     try {
         const u = new URL(url);
@@ -222,7 +164,7 @@ const liveVideoSrc = computed(() => {
 });
 
 const introVideoSrc = computed(() => {
-    const url = props.siteSettings?.intro_video_url;
+    const url = siteSettings.value?.intro_video_url;
     if (!url) return "";
     try {
         const u = new URL(url);
@@ -241,21 +183,29 @@ const introVideoSrc = computed(() => {
 });
 
 const openLiveVideo = () => {
-    if (props.activeLiveStream?.embed_url) {
+    if (activeLiveStream.value?.embed_url) {
         showVideoModal.value = true;
     } else {
         window.open("https://www.youtube.com", "_blank", "noopener,noreferrer");
     }
 };
 
-const closeLiveVideo = () => {
-    showVideoModal.value = false;
+const loadData = async ()=>  {
+    const response  = await axios.get("/api/home-page-data");
+    siteSettings.value = response.data.siteSettings;
+    featuredEvents.value = response.data.featuredEvents;
+    homeGalleryImages.value = response.data.homeGalleryImages;
+    heroSlides.value = response.data.heroSlides;
+    isLoading.value = false;
+    console.log("Home data:", response.data);
 };
+
 
 onMounted(() => {
     startHeroSlideTimer();
     startSlideTimer();
     setupScrollReveal();
+    loadData();
 });
 
 onBeforeUnmount(() => {
@@ -271,6 +221,7 @@ onBeforeUnmount(() => {
         <Head title="Home" />
 
         <section
+            v-if="activeHeroSlide >= 0 && !isLoading"
             class="relative overflow-hidden rounded-[32px] shadow-2xl shadow-slate-300/40"
             @mouseenter="stopHeroSlideTimer"
             @mouseleave="startHeroSlideTimer"
@@ -370,16 +321,12 @@ onBeforeUnmount(() => {
 
         <!-- Mission, Vision & Contact — shown when set in admin Site Settings -->
         <section
-            v-if="
-                siteSettings?.mission ||
-                siteSettings?.vision ||
-                siteSettings?.email
-            "
             class="scroll-reveal reveal-from-bottom mt-0 mb-10 grid gap-6 md:grid-cols-3"
         >
             <div
                 v-if="siteSettings?.mission"
-                class="rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
+                class="fade-in rounded-[28px] border border-blue-100 bg-blue-50 p-6 shadow-lg shadow-blue-100/40"
+                mode="out-in"
             >
                 <p
                     class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700"
@@ -387,7 +334,7 @@ onBeforeUnmount(() => {
                     Our Mission
                 </p>
                 <p class="mt-4 leading-7 text-slate-700">
-                    {{ siteSettings.mission }}
+                    {{ siteSettings?.mission }}
                 </p>
             </div>
 
@@ -671,7 +618,7 @@ onBeforeUnmount(() => {
             <div class="relative w-full" style="padding-top: 56.25%">
                 <iframe
                     class="absolute inset-0 h-full w-full"
-                    :src="introVideoSrc"
+                    :src="siteSettings?.intro_video_url"
                     title="Church Intro Video"
                     frameborder="0"
                     allow="
@@ -790,20 +737,16 @@ onBeforeUnmount(() => {
                 </p>
             </div>
 
+          
             <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <figure
                     v-for="(image, index) in homeGalleryImages"
                     :key="image"
-                    class="scroll-reveal group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
-                    :class="
-                        index % 2 === 0
-                            ? 'reveal-from-left'
-                            : 'reveal-from-right'
-                    "
+                    class="group overflow-hidden rounded-[24px] border border-slate-200 bg-slate-100 shadow-lg shadow-slate-200/40"
                     :style="{ '--reveal-delay': `${index * 90}ms` }"
                 >
                     <img
-                        :src="image"
+                        :src="image"                        
                         :alt="`Redeemer church photo ${index + 1}`"
                         class="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
                         loading="lazy"
@@ -879,6 +822,7 @@ onBeforeUnmount(() => {
             </h2>
             <div class="mt-6 grid gap-4 md:grid-cols-3">
                 <article
+                    v-if="featuredEvents.length > 0"
                     v-for="event in featuredEvents"
                     :key="event.id"
                     class="rounded-2xl border border-slate-200 p-4"

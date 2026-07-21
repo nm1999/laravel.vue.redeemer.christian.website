@@ -2,10 +2,22 @@
 import Layout from './Layout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useScrollReveal } from '../composables/useScrollReveal';
+import { onMounted, ref } from 'vue';
+import axios from "axios";
 
-const props = defineProps({
-  posts: Array,
-});
+
+const posts =  ref([]);
+const isLoading = ref(true);
+const fetchPosts = async ()=>{
+   const response  = await axios.get("/api/activities");
+   posts.value = response.data.posts;
+   isLoading.value = false;
+   console.log(response.data);
+};
+
+onMounted(()=>{
+  fetchPosts();
+})
 
 useScrollReveal();
 </script>

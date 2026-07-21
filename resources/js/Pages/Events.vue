@@ -34,10 +34,6 @@ onMounted(()=>{
           <Link :href="`/events/${event.slug}`" class="mt-3 inline-block text-blue-700">View details</Link>
         </article>
       </div>
-      <div v-if="selectedEvent" class="mt-8 rounded-xl bg-slate-100 p-5">
-        <h3 class="text-xl font-semibold">Selected Event: {{ selectedEvent.title }}</h3>
-        <p class="mt-2">{{ selectedEvent.description }}</p>
-      </div>
     </section>
   </Layout>
 </template>

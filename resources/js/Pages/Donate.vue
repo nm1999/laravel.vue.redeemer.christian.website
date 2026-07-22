@@ -4,6 +4,8 @@ import { Head, useForm } from "@inertiajs/vue3";
 import { computed, ref, watch, toRefs } from "vue";
 
 const isLoading = ref(false);
+const amountToPay = ref(0);
+const message = ref(null);
 const props = defineProps({
     publicKey: String,
     status: String,
@@ -19,7 +21,7 @@ watch(url, (newVal, oldVal) => {
     }
 });
 const form = useForm({
-    amount: "",
+    amount: amountToPay.value,
     description: "Donation",
     email: "admin@redemeer.org",
     callback_url: "https://redeemercf.org/donate",
@@ -28,8 +30,12 @@ const form = useForm({
 });
 
 const submit = () => {
-    isLoading.value = true;
-    form.post("/initiate-payment");
+    if(amountToPay.value < 1000){
+        isLoading.value = true;
+        form.post("/initiate-payment");
+    }else{
+        message.value = "the amount should be above UGX 1000";
+    }
 };
 </script>
 
@@ -151,11 +157,13 @@ const submit = () => {
                                     class="mb-2 block text-sm font-medium text-slate-700"
                                     >Amount (UGX)</label
                                 >
+                                <span v-if="message != null" style="color:red">{{ message }}</span>
                                 <input
                                     type="number"
                                     v-model="form.amount"
                                     name="amount"
                                     placeholder="amount"
+                                    min="1000"
                                     class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700 focus:border-blue-500 focus:ring-blue-500"
                                 />
 

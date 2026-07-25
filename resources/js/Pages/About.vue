@@ -5,8 +5,17 @@ import axios from 'axios';
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useScrollReveal } from '../composables/useScrollReveal';
 
+const clickedId = ref(null);
+
+const isOpen = (id)=> {
+  return clickedId.value ==  id;
+};
 const leadershipTeam = ref([]);
 let leaderObserver = null;
+
+const displayBioData = (id)=>{
+  clickedId.value = id;
+}
 
 useScrollReveal();
 
@@ -155,15 +164,20 @@ onBeforeUnmount(() => {
           :class="index % 2 === 0 ? 'reveal-from-left' : 'reveal-from-right'"
           :style="{ '--reveal-delay': `${index * 90}ms` }"
         >
-          <img
-            :src="leader.image"
-            :alt="leader.name"
-            class="h-64 w-full object-cover"
-          >
+        <div
+          class="w-full h-64 rounded-xl"
+          style="background-size: cover; background-repeat: no-repeat;"
+          :style="{
+            backgroundImage: `url(https://redeemercf.org/${leader.image})`
+          }"
+        ></div>
           <div class="p-6">
             <h3 class="text-2xl font-semibold text-slate-900">{{ leader.name }}</h3>
             <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">{{ leader.title }}</p>
-            <p v-if="leader.bio" class="mt-3 text-sm leading-6 text-slate-600">{{ leader.bio }}</p>
+            <span @click="displayBioData(leader.id)" style="color:red; cursor: pointer;">Read more...</span>
+            <p v-if="leader.bio && isOpen(leader.id)" class="mt-3 text-sm leading-6 text-slate-600">
+              {{ leader.bio }}
+            </p>
           </div>
         </article>
       </div>

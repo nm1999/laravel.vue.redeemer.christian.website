@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
           <div class="p-6">
             <h3 class="text-2xl font-semibold text-slate-900">{{ leader.name }}</h3>
             <p class="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">{{ leader.title }}</p>
-            <span @click="displayBioData(leader.id)" style="color:red; cursor: pointer;">Read more...</span>
+            <span v-if="!isOpen(leader.id)" @click="displayBioData(leader.id)" style="color:red; cursor: pointer;">Read more...</span>
             <p v-if="leader.bio && isOpen(leader.id)" class="mt-3 text-sm leading-6 text-slate-600">
               {{ leader.bio }}
             </p>
